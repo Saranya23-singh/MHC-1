@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Rate Tracker - SootheSpace</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #F7F5F2 0%, #E8F5E9 50%, #F0F7F4 100%);
+            min-height: 100vh;
+            color: #2F3E46;
+            position: relative;
+            padding: 20px;
+        }
+
+        /* Background decorations */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -100px;
+            left: -100px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(244, 124, 60, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -100px;
+            right: -100px;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(123, 174, 127, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #7BAE7F 0%, #8BC49A 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(123, 174, 127, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(123, 174, 127, 0.4);
+        }
+
+        .main-title {
+            text-align: center;
+            color: #F47C3C;
+            font-size: 2.5rem;
+            margin: 60px 0 2rem;
+            font-weight: 700;
+        }
+
+        .main-title i {
+            margin-right: 12px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(244, 124, 60, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .top-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-section {
+            padding: 25px;
+            background: linear-gradient(135deg, #FFF5F0 0%, #FFF0E8 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(244, 124, 60, 0.1);
+        }
+
+        .input-section h3 {
+            color: #F47C3C;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-section label {
+            display: block;
+            color: #2F3E46;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .input-section input,
+        .input-section select {
+            width: 100%;
+            padding: 14px 18px;
+            margin-bottom: 15px;
+            border: 2px solid rgba(244, 124, 60, 0.2);
+            border-radius: 15px;
+            font-size: 1rem;
+            font-family: 'Nunito', sans-serif;
+            outline: none;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input-section input:focus,
+        .input-section select:focus {
+            border-color: #F47C3C;
+            box-shadow: 0 0 0 4px rgba(244, 124, 60, 0.1);
+        }
+
+        .input-section button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #F47C3C 0%, #f5905a 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(244, 124, 60, 0.3);
+            font-family: 'Nunito', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .input-section button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(244, 124, 60, 0.4);
+        }
+
+        .analysis {
+            margin-top: 20px;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 15px;
+            font-size: 0.95rem;
+            text-align: center;
+            color: #6B7C85;
+            border-left: 4px solid #F47C3C;
+        }
+
+        .analysis .warning {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .stats-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .stat-tab {
+            flex: 1;
+            padding: 25px;
+            background: linear-gradient(135deg, #F47C3C 0%, #f5905a 100%);
+            border-radius: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(244, 124, 60, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .stat-tab:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(244, 124, 60, 0.35);
+        }
+
+        .stat-tab h3 {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-bottom: 10px;
+        }
+
+        .stat-tab .value {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .stat-tab .unit {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .chart-wrapper {
+            background: linear-gradient(135deg, #FFF5F0 0%, #FFF0E8 100%);
+            padding: 20px;
+            border-radius: 20px;
+            height: 300px;
+            border: 1px solid rgba(244, 124, 60, 0.1);
+        }
+
+        .history-section {
+            margin-top: 2rem;
+        }
+
+        .history-section h3 {
+            color: #F47C3C;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        th {
+            background: linear-gradient(135deg, #F47C3C 0%, #f5905a 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #2F3E46;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #FFF5F0;
+        }
+
+        .delete-btn {
+            padding: 8px 15px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 900px) {
+            .top-section {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="dashboard.html" class="home-btn"><i class="fas fa-home"></i> Home</a>
+
+    <h1 class="main-title"><i class="fas fa-heartbeat"></i> Heart Rate Tracker</h1>
+    <div class="container">
+        <div class="top-section">
+            <div class="input-section">
+                <h3><i class="fas fa-plus-circle"></i> Log Heart Rate</h3>
+                <div>
+                    <label>Date and Time:</label>
+                    <input type="datetime-local" id="timestamp">
+                </div>
+                <div>
+                    <label>Heart Rate (BPM):</label>
+                    <input type="number" id="heartRate" min="30" max="220" placeholder="Enter heart rate">
+                </div>
+                <div>
+                    <label>Activity Level:</label>
+                    <select id="activity">
+                        <option value="resting">Resting</option>
+                        <option value="light">Light Activity</option>
+                        <option value="moderate">Moderate Exercise</option>
+                        <option value="intense">Intense Exercise</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Mood:</label>
+                    <select id="mood">
+                        <option value="calm">Calm</option>
+                        <option value="happy">Happy</option>
+                        <option value="stressed">Stressed</option>
+                        <option value="anxious">Anxious</option>
+                        <option value="tired">Tired</option>
+                    </select>
+                </div>
+                <button onclick="trackHeartRate()"><i class="fas fa-heart"></i> Track Heart Rate</button>
+                <div class="analysis" id="analysis"></div>
+            </div>
+            <div class="stats-section">
+                <div class="stat-tab">
+                    <h3>Latest Heart Rate</h3>
+                    <div class="value"><span id="currentBPM">--</span></div>
+                    <div class="unit">BPM</div>
+                </div>
+                <div class="stat-tab" style="background: linear-gradient(135deg, #7BAE7F 0%, #8BC49A 100%);">
+                    <h3>Average Rate</h3>
+                    <div class="value"><span id="averageBPM">--</span></div>
+                    <div class="unit">BPM</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-container">
+            <div class="chart-wrapper">
+                <canvas id="heartRateLineChart"></canvas>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="heartRateBarChart"></canvas>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <h3><i class="fas fa-history"></i> Heart Rate History</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Heart Rate</th>
+                        <th>Activity</th>
+                        <th>Mood</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="heartRateHistory"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let heartRateData = JSON.parse(localStorage.getItem('heartRateData')) || [];
+        let lineChart, barChart;
+
+        function trackHeartRate() {
+            let timestamp = new Date(document.getElementById('timestamp').value);
+            let heartRate = parseInt(document.getElementById('heartRate').value);
+            let activity = document.getElementById('activity').value;
+            let mood = document.getElementById('mood').value;
+
+            if (!timestamp || !heartRate || heartRate < 30 || heartRate > 220) {
+                alert("Please enter valid date and heart rate (30-220 BPM).");
+                return;
+            }
+
+            let analysis = analyzeHeartRate(heartRate, activity);
+            document.getElementById("analysis").innerHTML = analysis;
+            document.getElementById("currentBPM").textContent = heartRate;
+
+            heartRateData.push({
+                timestamp: timestamp.toISOString(),
+                heartRate: heartRate,
+                activity: activity,
+                mood: mood
+            });
+
+            if (heartRateData.length > 10) {
+                heartRateData.shift();
+            }
+
+            // Update average
+            const average = heartRateData.reduce((sum, entry) => sum + entry.heartRate, 0) / heartRateData.length;
+            document.getElementById("averageBPM").textContent = average.toFixed(1);
+
+            localStorage.setItem('heartRateData', JSON.stringify(heartRateData));
+            loadHistory();
+            updateCharts();
+        }
+
+        function analyzeHeartRate(heartRate, activity) {
+            let analysis = "";
+
+            const zones = {
+                resting: { min: 60, max: 100 },
+                light: { min: 70, max: 120 },
+                moderate: { min: 100, max: 150 },
+                intense: { min: 130, max: 180 }
+            };
+
+            const currentZone = zones[activity];
+
+            if (heartRate < currentZone.min) {
+                analysis += `<p>Your heart rate is below typical range for ${activity} activity.</p>`;
+            } else if (heartRate > currentZone.max) {
+                analysis += `<p class="warning">⚠️ Your heart rate is above typical range for ${activity} activity.</p>`;
+            } else {
+                analysis += `<p>✅ Your heart rate is within normal range for ${activity} activity.</p>`;
+            }
+
+            return analysis;
+        }
+
+        function deleteEntry(index) {
+            heartRateData.splice(index, 1);
+            localStorage.setItem('heartRateData', JSON.stringify(heartRateData));
+            loadHistory();
+            updateCharts();
+        }
+
+        function loadHistory() {
+            let history = document.getElementById("heartRateHistory");
+            history.innerHTML = '';
+            heartRateData.forEach((entry, i) => {
+                let timestamp = new Date(entry.timestamp);
+                let newRow = `<tr>
+                    <td>${timestamp.toLocaleString()}</td>
+                    <td>${entry.heartRate}</td>
+                    <td>${entry.activity}</td>
+                    <td>${entry.mood}</td>
+                    <td><button class="delete-btn" onclick="deleteEntry(${i})">Delete</button></td>
+                </tr>`;
+                history.innerHTML += newRow;
+            });
+        }
+
+        function updateCharts() {
+            updateLineChart();
+            updateBarChart();
+        }
+
+        function updateLineChart() {
+            const ctx = document.getElementById('heartRateLineChart').getContext('2d');
+
+            if (lineChart) {
+                lineChart.destroy();
+            }
+
+            lineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: heartRateData.map(entry => new Date(entry.timestamp).toLocaleTimeString()),
+                    datasets: [{
+                        label: 'Heart Rate (BPM)',
+                        data: heartRateData.map(entry => entry.heartRate),
+                        borderColor: '#F47C3C',
+                        backgroundColor: 'rgba(244, 124, 60, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Heart Rate Trend',
+                            color: '#F47C3C',
+                            font: { size: 16, weight: 'bold' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            suggestedMin: 50,
+                            suggestedMax: 200,
+                            title: {
+                                display: true,
+                                text: 'BPM',
+                                color: '#2F3E46'
+                            },
+                            grid: {
+                                color: 'rgba(244, 124, 60, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateBarChart() {
+            const ctx = document.getElementById('heartRateBarChart').getContext('2d');
+
+            const avgByActivity = {};
+            heartRateData.forEach(entry => {
+                if (!avgByActivity[entry.activity]) {
+                    avgByActivity[entry.activity] = {
+                        sum: 0,
+                        count: 0
+                    };
+                }
+                avgByActivity[entry.activity].sum += entry.heartRate;
+                avgByActivity[entry.activity].count += 1;
+            });
+
+            const activities = Object.keys(avgByActivity);
+            const averages = activities.map(activity =>
+                avgByActivity[activity].sum / avgByActivity[activity].count
+            );
+
+            if (barChart) {
+                barChart.destroy();
+            }
+
+            barChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: activities,
+                    datasets: [{
+                        label: 'Average Heart Rate',
+                        data: averages,
+                        backgroundColor: 'rgba(123, 174, 127, 0.7)',
+                        borderColor: '#7BAE7F',
+                        borderWidth: 1,
+                        borderRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'By Activity',
+                            color: '#7BAE7F',
+                            font: { size: 16, weight: 'bold' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            suggestedMin: 50,
+                            suggestedMax: 200,
+                            title: {
+                                display: true,
+                                text: 'BPM',
+                                color: '#2F3E46'
+                            },
+                            grid: {
+                                color: 'rgba(123, 174, 127, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Set default timestamp and load initial data
+        window.onload = () => {
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('timestamp').value = now.toISOString().slice(0, 16);
+            loadHistory();
+            updateCharts();
+        };
+    </script>
+</body>
+</html>
+

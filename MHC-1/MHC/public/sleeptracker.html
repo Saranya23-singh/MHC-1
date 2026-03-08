@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Tracker - SootheSpace</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #F7F5F2 0%, #E8F5E9 50%, #F0F7F4 100%);
+            min-height: 100vh;
+            color: #2F3E46;
+            position: relative;
+            padding: 20px;
+        }
+
+        /* Background decorations */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -100px;
+            left: -100px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(123, 174, 127, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -100px;
+            right: -100px;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(30, 30, 80, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #7BAE7F 0%, #8BC49A 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(123, 174, 127, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(123, 174, 127, 0.4);
+        }
+
+        .main-title {
+            text-align: center;
+            color: #7BAE7F;
+            font-size: 2.5rem;
+            margin: 60px 0 2rem;
+            font-weight: 700;
+        }
+
+        .main-title i {
+            margin-right: 12px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(123, 174, 127, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .top-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-section {
+            padding: 25px;
+            background: linear-gradient(135deg, #E8F5E9 0%, #F0F7F4 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(123, 174, 127, 0.1);
+        }
+
+        .input-section h3 {
+            color: #7BAE7F;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-section label {
+            display: block;
+            color: #2F3E46;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .input-section input {
+            width: 100%;
+            padding: 14px 18px;
+            margin-bottom: 15px;
+            border: 2px solid rgba(123, 174, 127, 0.2);
+            border-radius: 15px;
+            font-size: 1rem;
+            font-family: 'Nunito', sans-serif;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-section input:focus {
+            border-color: #7BAE7F;
+            box-shadow: 0 0 0 4px rgba(123, 174, 127, 0.1);
+        }
+
+        .input-section button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #F47C3C 0%, #f5905a 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(244, 124, 60, 0.3);
+            font-family: 'Nunito', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .input-section button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(244, 124, 60, 0.4);
+        }
+
+        .advice {
+            margin-top: 20px;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 15px;
+            font-size: 0.95rem;
+            text-align: center;
+            color: #6B7C85;
+            border-left: 4px solid #7BAE7F;
+        }
+
+        .stats-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .stat-tab {
+            flex: 1;
+            padding: 25px;
+            background: linear-gradient(135deg, #7BAE7F 0%, #8BC49A 100%);
+            border-radius: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(123, 174, 127, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .stat-tab:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(123, 174, 127, 0.35);
+        }
+
+        .stat-tab h3 {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-bottom: 10px;
+        }
+
+        .stat-tab .value {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .stat-tab .unit {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .chart-wrapper {
+            background: linear-gradient(135deg, #E8F5E9 0%, #F0F7F4 100%);
+            padding: 20px;
+            border-radius: 20px;
+            height: 300px;
+            border: 1px solid rgba(123, 174, 127, 0.1);
+        }
+
+        .history-section {
+            margin-top: 2rem;
+        }
+
+        .history-section h3 {
+            color: #7BAE7F;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        th {
+            background: linear-gradient(135deg, #7BAE7F 0%, #8BC49A 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #2F3E46;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #F7FBF8;
+        }
+
+        .delete-btn {
+            padding: 8px 15px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 900px) {
+            .top-section {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="dashboard.html" class="home-btn"><i class="fas fa-home"></i> Home</a>
+
+    <h1 class="main-title"><i class="fas fa-moon"></i> Sleep Tracker</h1>
+    <div class="container">
+        <div class="top-section">
+            <div class="input-section">
+                <h3><i class="fas fa-clock"></i> Log Your Sleep</h3>
+                <label>Sleep Time:</label>
+                <input type="datetime-local" id="sleepTime">
+                <label>Wake Time:</label>
+                <input type="datetime-local" id="wakeTime">
+                <button onclick="trackSleep()"><i class="fas fa-plus"></i> Track Sleep</button>
+                <div class="advice" id="advice"></div>
+            </div>
+            <div class="stats-section">
+                <div class="stat-tab">
+                    <h3>Hours Slept</h3>
+                    <div class="value"><span id="hoursSlept">0</span></div>
+                    <div class="unit">hours</div>
+                </div>
+                <div class="stat-tab" style="background: linear-gradient(135deg, #F47C3C 0%, #f5905a 100%);">
+                    <h3>Sleep Score</h3>
+                    <div class="value"><span id="sleepScore">0</span></div>
+                    <div class="unit">out of 10</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-container">
+            <div class="chart-wrapper">
+                <canvas id="sleepLineChart"></canvas>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="sleepBarChart"></canvas>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <h3><i class="fas fa-history"></i> Sleep History</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sleep Time</th>
+                        <th>Wake Time</th>
+                        <th>Duration (hrs)</th>
+                        <th>Score</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="sleepHistory"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let sleepData = JSON.parse(localStorage.getItem('sleepData')) || [];
+        let lineChart, barChart;
+
+        function trackSleep() {
+            let sleepTime = new Date(document.getElementById('sleepTime').value);
+            let wakeTime = new Date(document.getElementById('wakeTime').value);
+
+            if (!sleepTime || !wakeTime || wakeTime <= sleepTime) {
+                alert("Please enter valid sleep and wake times.");
+                return;
+            }
+
+            let duration = (wakeTime - sleepTime) / (1000 * 60 * 60);
+            let score = Math.min((duration / 8) * 10, 10).toFixed(1);
+
+            document.getElementById("hoursSlept").textContent = duration.toFixed(1);
+            document.getElementById("sleepScore").textContent = score;
+
+            let advice = "";
+            if (duration < 7) {
+                advice = "😴 You should try to get more sleep. Aim for 7-9 hours for better health.";
+            } else if (duration >= 7 && duration <= 9) {
+                advice = "✅ Great job! You're getting a healthy amount of sleep.";
+            } else if (duration > 9) {
+                advice = "⚠️ Avoid oversleeping. Too much sleep can make you feel tired.";
+            }
+            document.getElementById("advice").textContent = advice;
+
+            sleepData.push({
+                sleepTime: sleepTime.toISOString(),
+                wakeTime: wakeTime.toISOString(),
+                duration: duration,
+                score: score,
+                date: sleepTime.toLocaleDateString()
+            });
+
+            if (sleepData.length > 7) {
+                sleepData.shift();
+            }
+            localStorage.setItem('sleepData', JSON.stringify(sleepData));
+            loadHistory();
+            updateCharts();
+        }
+
+        function deleteEntry(index) {
+            sleepData.splice(index, 1);
+            localStorage.setItem('sleepData', JSON.stringify(sleepData));
+            loadHistory();
+            updateCharts();
+        }
+
+        function loadHistory() {
+            let history = document.getElementById("sleepHistory");
+            history.innerHTML = '';
+            sleepData.forEach((entry, i) => {
+                let sleepTime = new Date(entry.sleepTime);
+                let wakeTime = new Date(entry.wakeTime);
+                let newRow = `<tr>
+                    <td>${sleepTime.toLocaleString()}</td>
+                    <td>${wakeTime.toLocaleString()}</td>
+                    <td>${entry.duration.toFixed(2)}</td>
+                    <td>${entry.score}</td>
+                    <td><button class="delete-btn" onclick="deleteEntry(${i})">Delete</button></td>
+                </tr>`;
+                history.innerHTML += newRow;
+            });
+        }
+
+        function updateCharts() {
+            updateLineChart();
+            updateBarChart();
+        }
+
+        function updateLineChart() {
+            const ctx = document.getElementById('sleepLineChart').getContext('2d');
+
+            if (lineChart) {
+                lineChart.destroy();
+            }
+
+            lineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: sleepData.map(entry => new Date(entry.sleepTime).toLocaleDateString()),
+                    datasets: [{
+                        label: 'Hours Slept',
+                        data: sleepData.map(entry => entry.duration),
+                        borderColor: '#7BAE7F',
+                        backgroundColor: 'rgba(123, 174, 127, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Sleep Trend',
+                            color: '#7BAE7F',
+                            font: { size: 16, weight: 'bold' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            suggestedMax: 12,
+                            title: {
+                                display: true,
+                                text: 'Hours',
+                                color: '#2F3E46'
+                            },
+                            grid: {
+                                color: 'rgba(123, 174, 127, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateBarChart() {
+            const ctx = document.getElementById('sleepBarChart').getContext('2d');
+
+            if (barChart) {
+                barChart.destroy();
+            }
+
+            barChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sleepData.map(entry => new Date(entry.sleepTime).toLocaleDateString()),
+                    datasets: [{
+                        label: 'Hours Slept',
+                        data: sleepData.map(entry => entry.duration),
+                        backgroundColor: 'rgba(244, 124, 60, 0.7)',
+                        borderColor: '#F47C3C',
+                        borderWidth: 1,
+                        borderRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Daily Sleep',
+                            color: '#7BAE7F',
+                            font: { size: 16, weight: 'bold' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            suggestedMax: 12,
+                            title: {
+                                display: true,
+                                text: 'Hours',
+                                color: '#2F3E46'
+                            },
+                            grid: {
+                                color: 'rgba(123, 174, 127, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load initial data
+        window.onload = () => {
+            loadHistory();
+            updateCharts();
+        };
+    </script>
+</body>
+</html>
+

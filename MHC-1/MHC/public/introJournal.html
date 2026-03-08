@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to SootheSpace Journal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #F7F5F2 0%, #E8F5E9 50%, #F0F7F4 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background decorations */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -100px;
+            left: -100px;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(123, 174, 127, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -100px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(244, 124, 60, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+            animation: float 25s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(30px, -30px); }
+            66% { transform: translate(-20px, 20px); }
+        }
+
+        .intro-container {
+            max-width: 800px;
+            text-align: center;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            box-shadow: 0 25px 80px rgba(123, 174, 127, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            color: #7BAE7F;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .logo i {
+            color: #F47C3C;
+        }
+
+        .subtitle {
+            color: #F47C3C;
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .description {
+            color: #6B7C85;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #F47C3C 0%, #f5905a 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            font-size: 1.15rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 8px 25px rgba(244, 124, 60, 0.35);
+            font-weight: 600;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(244, 124, 60, 0.45);
+            background: linear-gradient(135deg, #e66a2c 0%, #e87d3f 100%);
+        }
+
+        .start-btn:active {
+            transform: translateY(0);
+        }
+
+        .illustration {
+            width: 200px;
+            height: 200px;
+            margin: 2rem auto;
+            background: linear-gradient(135deg, #E8F5E9 0%, #F0F7F4 100%);
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(123, 174, 127, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .illustration i {
+            font-size: 4rem;
+            color: #7BAE7F;
+        }
+
+        .illustration::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to top, rgba(123, 174, 127, 0.2), transparent);
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .feature {
+            flex: 1;
+            min-width: 180px;
+            max-width: 220px;
+            padding: 1.5rem 1rem;
+            background: linear-gradient(135deg, #E8F5E9 0%, #F0F7F4 100%);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(123, 174, 127, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #7BAE7F;
+        }
+
+        .feature-title {
+            color: #2F3E46;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .feature-text {
+            color: #6B7C85;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .intro-container {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+
+            .features {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .feature {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="intro-container">
+        <div class="logo"><i class="fas fa-spa"></i> SootheSpace</div>
+        <h2 class="subtitle">Your Digital Safe Space</h2>
+        
+        <div class="illustration">
+            <i class="fas fa-book-open"></i>
+        </div>
+        
+        <p class="description">
+            Welcome to your personal digital journal — a space where thoughts flow freely and authenticity thrives. 
+            Here, you can find solace in expressing your daily experiences, challenges, and victories. 
+            Take a moment to reflect, unwind, and let your thoughts find their voice.
+        </p>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                <h3 class="feature-title">Private & Secure</h3>
+                <p class="feature-text">Your thoughts stay yours, saved locally on your device.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-cloud"></i></div>
+                <h3 class="feature-title">Mindful Space</h3>
+                <p class="feature-text">A clean, distraction-free environment for reflection.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-heart"></i></div>
+                <h3 class="feature-title">Express Freely</h3>
+                <p class="feature-text">No judgments, just your authentic thoughts.</p>
+            </div>
+        </div>
+
+        <a href="journal.html" class="start-btn"><i class="fas fa-pen-fancy"></i> Start Writing</a>
+        
+        <p style="margin-top: 1.5rem;">
+            <a href="dashboard.html" style="color: #7BAE7F; text-decoration: none; font-weight: 600;">← Back to Dashboard</a>
+        </p>
+    </div>
+</body>
+</html>
+

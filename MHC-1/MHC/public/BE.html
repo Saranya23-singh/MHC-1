@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4-7-8 Breathing Exercise - SootheSpace</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="BE.css">
+</head>
+
+<body>
+    <!-- Floating gradient orbs -->
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+
+    <a href="dashboard.html" class="home-btn"><i class="fas fa-home"></i> Home</a>
+
+    <div class="container">
+        <h1><i class="fas fa-wind"></i> 4-7-8 Breathing</h1>
+        <p>A natural tranquilizer for the nervous system. Practice this mindful breathing technique to reduce stress and anxiety.</p>
+
+        <div class="instructions">
+            <div class="instruction-step">
+                <i class="fas fa-lungs"></i>
+                <div>Inhale<br><span>4 seconds</span></div>
+            </div>
+            <div class="instruction-step">
+                <i class="fas fa-pause"></i>
+                <div>Hold<br><span>7 seconds</span></div>
+            </div>
+            <div class="instruction-step">
+                <i class="fas fa-wind"></i>
+                <div>Exhale<br><span>8 seconds</span></div>
+            </div>
+        </div>
+
+        <div class="circle-container">
+            <div class="circle" id="circle">Inhale</div>
+            <div class="ripple-2"></div>
+            <div class="timer-display" id="timerDisplay"></div>
+            <div class="phase-indicator" id="phaseIndicator"></div>
+        </div>
+        <button id="breathButton" class="breath-btn">
+            <i class="fas fa-play"></i> Start
+        </button>
+    </div>
+
+    <script src="BE.js"></script>
+    <script>
+        // Direct event listener to ensure button works
+        document.addEventListener('DOMContentLoaded', function() {
+            const btn = document.getElementById('breathButton');
+            if (btn) {
+                btn.addEventListener('click', function() {
+                    if (typeof toggleBreathing === 'function') {
+                        toggleBreathing();
+                    } else {
+                        console.error('toggleBreathing function not found!');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
+

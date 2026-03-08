@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoga & Meditation - SootheSpace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #F7F5F2 0%, #E8F5E9 50%, #F0F7F4 100%);
+            color: #2F3E46;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Background decorations */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -100px;
+            left: -100px;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(123, 174, 127, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -100px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(244, 124, 60, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #7BAE7F 0%, #8BC49A 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(123, 174, 127, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(123, 174, 127, 0.4);
+        }
+
+        header {
+            background: linear-gradient(135deg, #7BAE7F 0%, #8BC49A 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(123, 174, 127, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+            animation: shimmer 15s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .info-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 2.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 15px 50px rgba(123, 174, 127, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .info-section h2 {
+            color: #7BAE7F;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .info-section h2 i {
+            color: #F47C3C;
+        }
+
+        .info-section > p {
+            color: #6B7C85;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .info-section ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            padding: 0;
+        }
+
+        .info-section li {
+            background: linear-gradient(135deg, #E8F5E9 0%, #F0F7F4 100%);
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .info-section li:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(123, 174, 127, 0.15);
+        }
+
+        .info-section li i {
+            color: #7BAE7F;
+            font-size: 1.2rem;
+        }
+
+        .video-category {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 2.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 15px 50px rgba(123, 174, 127, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .video-category h2 {
+            color: #7BAE7F;
+            margin-bottom: 1.5rem;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .video-scroll {
+            display: flex;
+            overflow-x: auto;
+            gap: 1.5rem;
+            padding: 1rem 0;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .video-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .video-scroll::-webkit-scrollbar-track {
+            background: rgba(123, 174, 127, 0.1);
+            border-radius: 4px;
+        }
+
+        .video-scroll::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, #7BAE7F, #F47C3C);
+            border-radius: 4px;
+        }
+
+        .video-item {
+            flex: 0 0 auto;
+            width: 320px;
+            scroll-snap-align: start;
+        }
+
+        .video-item iframe {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .video-item iframe:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 35px rgba(123, 174, 127, 0.2);
+        }
+
+        footer {
+            background: linear-gradient(135deg, #7BAE7F 0%, #8BC49A 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        footer p {
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .video-item {
+                width: 280px;
+            }
+
+            .info-section, .video-category {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="dashboard.html" class="home-btn"><i class="fas fa-home"></i> Home</a>
+
+    <header>
+        <h1><i class="fas fa-spa"></i> Yoga & Meditation</h1>
+        <p>Find peace through guided practices</p>
+    </header>
+
+    <div class="container">
+        <section class="info-section">
+            <h2><i class="fas fa-heart"></i> Benefits of Yoga</h2>
+            <p>Yoga helps with anxiety relief by combining physical movement, breath control, and mindfulness. Here's how it works:</p>
+            <ul>
+                <li><i class="fas fa-brain"></i> Activates the Parasympathetic Nervous System</li>
+                <li><i class="fas fa-balance-scale"></i> Reduces Stress Hormones</li>
+                <li><i class="fas fa-search"></i> Encourages Mindfulness & Present-Moment Awareness</li>
+                <li><i class="fas fa-hands"></i> Releases Muscle Tension</li>
+                <li><i class="fas fa-smile"></i> Boosts Mood & Emotional Resilience</li>
+                <li><i class="fas fa-heart"></i> Encourages Self-Compassion & Acceptance</li>
+            </ul>
+        </section>
+
+        <section class="video-category">
+            <h2><i class="fas fa-walking"></i> Yoga for Beginners</h2>
+            <div class="video-scroll">
+                <div class="video-item">
+                    <iframe src="https://www.youtube.com/embed/inpok4MKVLM" allowfullscreen></iframe>
+                </div>
+                <div class="video-item">
+                    <iframe src="https://www.youtube.com/embed/O-6f5wQXSu8" allowfullscreen></iframe>
+                </div>
+                <div class="video-item">
+                    <iframe src="https://www.youtube.com/embed/sTANio_2E0Q" allowfullscreen></iframe>
+                </div>
+                <div class="video-item">
+                    <iframe src="https://www.youtube.com/embed/40bPxbFUCj4" allowfullscreen></iframe>
+                </div>
+                <div class="video-item">
+                    <iframe src="https://www.youtube.com/embed/h7e-gaPHw5E" allowfullscreen></iframe>
+                </div>
+                <div class="video-item">
+                    <iframe src="https://www.youtube.com/embed/Mzda4jnA-mk" allowfullscreen></iframe>
+                </div>
+            </div>
+        </section>
+
+        <section class="video-category">
+            <h2><i class="fas fa-cloud"></i> Anxiety Relief Meditation</h2>
+            <div class="video-scroll">
+                <div class="video-item">
+                    <iframe src="https://www.youtube.com/embed/LBEAJcp0lTs" allowfullscreen></iframe>
+                </div>
+                <div class="video-item">
+                    <iframe src="https://www.youtube.com/embed/6arfMc9Aj4k" allowfullscreen></iframe>
+                </div>
+                <div class="video-item">
+                    <iframe src="https://www.youtube.com/embed/1XCObQjSHIs" allowfullscreen></iframe>
+                </div>
+                <div class="video-item">
+                    <iframe src="https://www.youtube.com/embed/7cqzSNgNo1M" allowfullscreen></iframe>
+                </div>
+                <div class="video-item">
+                    <iframe src="https://www.youtube.com/embed/McCDfP5M878" allowfullscreen></iframe>
+                </div>
+                <div class="video-item">
+                    <iframe src="https://www.youtube.com/embed/MdHXlAgUe9Y" allowfullscreen></iframe>
+                </div>
+            </div>
+        </section>
+
+        <section class="video-category">
+            <h2><i class="fas fa-music"></i> Relaxing Music</h2>
+            <div class="video-scroll">
+                <div class="video-item">
+                    <iframe src="https://www.youtube.com/embed/bP9gMpl1gyQ" allowfullscreen></iframe>
+                </div>
+                <div class="video-item">
+                    <iframe src="https://www.youtube.com/embed/I3OJUwILelU" allowfullscreen></iframe>
+                </div>
+                <div class="video-item">
+                    <iframe src="https://www.youtube.com/embed/xRcWlA1I9z0" allowfullscreen></iframe>
+                </div>
+                <div class="video-item">
+                    <iframe src="https://www.youtube.com/embed/1R47EQrxgfw" allowfullscreen></iframe>
+                </div>
+                <div class="video-item">
+                    <iframe src="https://www.youtube.com/embed/_4kHxtiuML0" allowfullscreen></iframe>
+                </div>
+                <div class="video-item">
+                    <iframe src="https://www.youtube.com/embed/0Ni00XDSd6E" allowfullscreen></iframe>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 SootheSpace - Your Mental Wellness Companion</p>
+    </footer>
+</body>
+</html>
+

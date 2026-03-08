@@ -1,0 +1,276 @@
+/* SootheSpace - Sleep Tracker Theme */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(135deg, #F7F5F2 0%, #E8F5E9 50%, #F0F7F4 100%);
+    min-height: 100vh;
+    color: #2F3E46;
+    position: relative;
+    overflow-x: hidden;
+    padding: 20px;
+}
+
+/* Background decorations */
+body::before {
+    content: '';
+    position: fixed;
+    top: -100px;
+    left: -100px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(123, 174, 127, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: -1;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    bottom: -100px;
+    right: -100px;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(30, 30, 80, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: -1;
+}
+
+.home-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #7BAE7F 0%, #8BC49A 100%);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(123, 174, 127, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.home-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(123, 174, 127, 0.4);
+}
+
+.container {
+    max-width: 550px;
+    margin: 80px auto 20px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 25px;
+    box-shadow: 0 20px 60px rgba(123, 174, 127, 0.15);
+    backdrop-filter: blur(10px);
+}
+
+.container h1 {
+    text-align: center;
+    color: #7BAE7F;
+    font-size: 2rem;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.container h1 i {
+    color: #1E3050;
+}
+
+.container > p {
+    text-align: center;
+    color: #6B7C85;
+    margin-bottom: 30px;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+label {
+    color: #2F3E46;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+label i {
+    color: #7BAE7F;
+    width: 20px;
+}
+
+input[type="time"] {
+    padding: 14px 18px;
+    border: 2px solid rgba(123, 174, 127, 0.2);
+    border-radius: 15px;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+    background: white;
+    font-family: 'Nunito', sans-serif;
+}
+
+input[type="time"]:focus {
+    border-color: #7BAE7F;
+    box-shadow: 0 0 0 4px rgba(123, 174, 127, 0.1);
+}
+
+input[type="number"] {
+    padding: 14px 18px;
+    border: 2px solid rgba(123, 174, 127, 0.2);
+    border-radius: 15px;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+    background: white;
+    font-family: 'Nunito', sans-serif;
+}
+
+input[type="number"]:focus {
+    border-color: #7BAE7F;
+    box-shadow: 0 0 0 4px rgba(123, 174, 127, 0.1);
+}
+
+button[type="submit"] {
+    margin-top: 10px;
+    padding: 16px;
+    background: linear-gradient(135deg, #F47C3C 0%, #f5905a 100%);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(244, 124, 60, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: 'Nunito', sans-serif;
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(244, 124, 60, 0.4);
+}
+
+/* Result Section */
+.result {
+    margin-top: 30px;
+    padding: 25px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #E8F5E9 0%, #F0F7F4 100%);
+    border: 1px solid rgba(123, 174, 127, 0.2);
+    display: none;
+}
+
+.result.show {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.result h2 {
+    color: #7BAE7F;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.result .sleep-duration {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2F3E46;
+    margin: 15px 0;
+    text-align: center;
+}
+
+.result .sleep-duration i {
+    color: #7BAE7F;
+}
+
+.result .quality {
+    text-align: center;
+    padding: 12px 20px;
+    border-radius: 15px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-top: 15px;
+}
+
+.result .quality.good {
+    background: rgba(123, 174, 127, 0.2);
+    color: #4A7C59;
+}
+
+.result .quality.fair {
+    background: rgba(244, 124, 60, 0.2);
+    color: #B85A2C;
+}
+
+.result .quality.poor {
+    background: rgba(220, 53, 69, 0.2);
+    color: #C82333;
+}
+
+.result .tips {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(123, 174, 127, 0.2);
+    color: #6B7C85;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.result .tips i {
+    color: #7BAE7F;
+    margin-right: 8px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        margin: 70px 15px 20px;
+        padding: 25px;
+    }
+
+    .container h1 {
+        font-size: 1.6rem;
+    }
+}
+

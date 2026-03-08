@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SootheSpace</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating gradient orbs -->
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="logo">
+            <i class="fas fa-spa"></i>
+            <span>SootheSpace</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="active"><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="journal.html"><i class="fas fa-book-open"></i> Journal</a></li>
+            <li><a href="BE.html"><i class="fas fa-wind"></i> Breathing</a></li>
+            <li><a href="med.html"><i class="fas fa-praying-hands"></i> Meditation</a></li>
+            <li><a href="AIbot.html"><i class="fas fa-robot"></i> AI Companion</a></li>
+            <li><a href="sleeptracker.html"><i class="fas fa-moon"></i> Sleep</a></li>
+            <li><a href="heartRate.html"><i class="fas fa-heartbeat"></i> Heart Rate</a></li>
+        </ul>
+        <div class="nav-footer">
+            <a href="Landingpage.html" class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="greeting">
+                <h1>Hello, <span id="userName">Friend</span> 🌿</h1>
+                <p>How are you feeling today?</p>
+            </div>
+            <div class="date-display">
+                <i class="fas fa-calendar-alt"></i>
+                <span id="currentDate"></span>
+            </div>
+        </header>
+
+        <!-- Mood Tracker Section -->
+        <section class="mood-section">
+            <h2><i class="fas fa-heart"></i> Today's Mood</h2>
+            <div class="mood-tracker">
+                <button class="mood-btn" data-mood="happy" onclick="selectMood('happy')">
+                    <span class="mood-emoji">🙂</span>
+                    <span class="mood-label">Happy</span>
+                </button>
+                <button class="mood-btn" data-mood="neutral" onclick="selectMood('neutral')">
+                    <span class="mood-emoji">😐</span>
+                    <span class="mood-label">Neutral</span>
+                </button>
+                <button class="mood-btn" data-mood="sad" onclick="selectMood('sad')">
+                    <span class="mood-emoji">😔</span>
+                    <span class="mood-label">Sad</span>
+                </button>
+                <button class="mood-btn" data-mood="anxious" onclick="selectMood('anxious')">
+                    <span class="mood-emoji">😰</span>
+                    <span class="mood-label">Anxious</span>
+                </button>
+                <button class="mood-btn" data-mood="calm" onclick="selectMood('calm')">
+                    <span class="mood-emoji">😌</span>
+                    <span class="mood-label">Calm</span>
+                </button>
+            </div>
+            <div class="mood-suggestion" id="moodSuggestion"></div>
+        </section>
+
+        <!-- Wellness Score & Streak -->
+        <div class="stats-row">
+            <div class="stat-card wellness-card">
+                <div class="stat-icon">
+                    <i class="fas fa-heart-pulse"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Wellness Score</h3>
+                    <div class="score-display">
+                        <div class="score-circle">
+                            <svg viewBox="0 0 100 100">
+                                <circle class="score-bg" cx="50" cy="50" r="45"/>
+                                <circle class="score-progress" cx="50" cy="50" r="45" id="scoreCircle"/>
+                            </svg>
+                            <span class="score-value" id="wellnessScore">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card streak-card">
+                <div class="stat-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Mindfulness Streak</h3>
+                    <p class="streak-count"><span id="streakDays">0</span> Days 🔥</p>
+                    <p class="streak-message" id="streakMessage">Start your journey today!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Reflection -->
+        <section class="reflection-section">
+            <div class="reflection-card">
+                <div class="reflection-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <div class="reflection-content">
+                    <h3>Daily Reflection</h3>
+                    <p id="dailyPrompt">"What made you smile today?"</p>
+                </div>
+                <button class="new-prompt-btn" onclick="newPrompt()">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Nature Sounds Player -->
+        <section class="sounds-section">
+            <h2><i class="fas fa-music"></i> Calming Sounds</h2>
+            <div class="sounds-player">
+                <button class="sound-btn" data-sound="rain" onclick="playSound('rain')">
+                    <i class="fas fa-cloud-rain"></i>
+                    <span>Rain</span>
+                </button>
+                <button class="sound-btn" data-sound="ocean" onclick="playSound('ocean')">
+                    <i class="fas fa-water"></i>
+                    <span>Ocean</span>
+                </button>
+                <button class="sound-btn" data-sound="forest" onclick="playSound('forest')">
+                    <i class="fas fa-tree"></i>
+                    <span>Forest</span>
+                </button>
+                <button class="sound-btn" data-sound="nature" onclick="playSound('nature')">
+                    <i class="fas fa-leaf"></i>
+                    <span>Nature</span>
+                </button>
+                <button class="sound-btn" data-sound="dawn" onclick="playSound('dawn')">
+                    <i class="fas fa-sunrise"></i>
+                    <span>Dawn</span>
+                </button>
+                <button class="sound-btn" data-sound="windchimes" onclick="playSound('windchimes')">
+                    <i class="fas fa-wind"></i>
+                    <span>Wind Chimes</span>
+                </button>
+            </div>
+            <div class="sound-controls">
+                <button id="playPauseBtn" class="play-pause-btn" onclick="togglePlayPause()">
+                    <i class="fas fa-play"></i>
+                </button>
+                <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="50">
+            </div>
+            <div class="now-playing" id="nowPlaying">
+                <span class="playing-indicator"></span>
+                <span id="playingText">Select a sound to play</span>
+            </div>
+            <audio id="audioPlayer"></audio>
+        </section>
+
+        <!-- Feature Cards -->
+        <section class="features-grid">
+            <h2><i class="fas fa-sparkles"></i> Your Wellness Tools</h2>
+            <div class="features-container">
+                <a href="BE.html" class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-wind"></i>
+                    </div>
+                    <h3>Breathing Session</h3>
+                    <p>4-7-8 breathing exercise</p>
+                </a>
+                <a href="journal.html" class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-pen-fancy"></i>
+                    </div>
+                    <h3>Write Journal</h3>
+                    <p>Express your thoughts</p>
+                </a>
+                <a href="AIbot.html" class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI Companion</h3>
+                    <p>Chat for support</p>
+                </a>
+                <a href="med.html" class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-praying-hands"></i>
+                    </div>
+                    <h3>Meditation</h3>
+                    <p>Guided videos</p>
+                </a>
+                <a href="sleeptracker.html" class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <h3>Sleep Tracker</h3>
+                    <p>Monitor your sleep</p>
+                </a>
+                <a href="heartRate.html" class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3>Heart Rate</h3>
+                    <p>Track your pulse</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Weekly Analytics -->
+        <section class="analytics-section">
+            <h2><i class="fas fa-chart-line"></i> Weekly Wellness</h2>
+            <div class="analytics-card">
+                <div class="chart-container">
+                    <div class="chart-bars">
+                        <div class="chart-bar" data-day="Mon" data-value="0" style="--height: 0%;">
+                            <span class="bar-label">Mon</span>
+                        </div>
+                        <div class="chart-bar" data-day="Tue" data-value="0" style="--height: 0%;">
+                            <span class="bar-label">Tue</span>
+                        </div>
+                        <div class="chart-bar" data-day="Wed" data-value="0" style="--height: 0%;">
+                            <span class="bar-label">Wed</span>
+                        </div>
+                        <div class="chart-bar" data-day="Thu" data-value="0" style="--height: 0%;">
+                            <span class="bar-label">Thu</span>
+                        </div>
+                        <div class="chart-bar" data-day="Fri" data-value="0" style="--height: 0%;">
+                            <span class="bar-label">Fri</span>
+                        </div>
+                        <div class="chart-bar" data-day="Sat" data-value="0" style="--height: 0%;">
+                            <span class="bar-label">Sat</span>
+                        </div>
+                        <div class="chart-bar" data-day="Sun" data-value="0" style="--height: 0%;">
+                            <span class="bar-label">Sun</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="analytics-legend">
+                    <div class="legend-item">
+                        <span class="legend-color mood"></span>
+                        <span>Mood Logs</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color breathing"></span>
+                        <span>Breathing Sessions</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color journal"></span>
+                        <span>Journal Entries</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="dashboard.js"></script>
+    <script src="sounds.js"></script>
+</body>
+</html>
+

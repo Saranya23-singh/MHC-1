@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journal - SootheSpace</title>
+    <link rel="stylesheet" href="journal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating gradient orbs -->
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+
+    <!-- Floating leaves decoration -->
+    <div class="leaf"><i class="fas fa-leaf"></i></div>
+    <div class="leaf"><i class="fas fa-seedling"></i></div>
+    <div class="leaf"><i class="fas fa-leaf"></i></div>
+    <div class="leaf"><i class="fas fa-seedling"></i></div>
+
+    <a href="dashboard.html" class="home-btn"><i class="fas fa-home"></i> Home</a>
+
+    <div class="journal-container">
+        <div class="header-icon"><i class="fas fa-book-open"></i></div>
+        <h3 class="header-text">If no one understands, we do! 💭</h3>
+        <div class="date-display" id="dateDisplay"></div>
+
+        <div class="journal-box">
+            <textarea id="journalText" placeholder="Share your thoughts in this safe space...
+
+This is your private sanctuary. Write about your day, your feelings, your hopes, or anything on your mind. There are no judgments here."></textarea>
+        </div>
+
+        <button class="save-btn" onclick="saveJournal()">
+            <i class="fas fa-save"></i> Save Entry
+        </button>
+
+        <!-- Journal History -->
+        <div class="journal-history" id="journalHistory">
+            <h3><i class="fas fa-history"></i> Previous Entries</h3>
+            <div id="historyList"></div>
+        </div>
+    </div>
+
+    <div id="saveMessage" class="message">
+        <i class="fas fa-check-circle"></i> Entry saved successfully!
+    </div>
+
+    <script src="journal.js"></script>
+</body>
+</html>
+

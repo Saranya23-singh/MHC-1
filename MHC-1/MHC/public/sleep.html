@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Quality Analyzer - SootheSpace</title>
+    <link rel="stylesheet" href="sleep.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <a href="dashboard.html" class="home-btn"><i class="fas fa-home"></i> Home</a>
+
+    <div class="container">
+        <h1><i class="fas fa-moon"></i> Sleep Quality</h1>
+        <p>Track your sleep patterns and improve your rest quality</p>
+        
+        <form id="sleepForm">
+            <div class="form-group">
+                <label for="sleepStart"><i class="fas fa-bed"></i> Sleep Start Time:</label>
+                <input type="time" id="sleepStart" name="sleepStart" required>
+            </div>
+
+            <div class="form-group">
+                <label for="sleepEnd"><i class="fas fa-sun"></i> Wake Up Time:</label>
+                <input type="time" id="sleepEnd" name="sleepEnd" required>
+            </div>
+
+            <div class="form-group">
+                <label for="points"><i class="fas fa-star"></i> How did you feel? (1-10)</label>
+                <input type="number" id="points" name="points" min="1" max="10" required placeholder="Rate your sleep quality">
+            </div>
+
+            <button type="submit"><i class="fas fa-chart-line"></i> Analyze Sleep</button>
+        </form>
+
+        <div id="result" class="result">
+            <!-- Results will be displayed here -->
+        </div>
+    </div>
+
+    <script src="sleep.js"></script>
+</body>
+</html>
+

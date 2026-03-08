@@ -1,0 +1,18 @@
+{
+  "name": "mh c-1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "MHC-1/MHC/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node MHC-1/MHC/server.js",
+    "dev": "node MHC-1/MHC/server.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "cors": "^2.8.6",
+    "dotenv": "^16.5.0",
+    "express": "^5.2.1",
+    "openai": "^4.104.0"
+  }
+}

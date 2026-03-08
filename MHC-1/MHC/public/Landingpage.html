@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SootheSpace - Your Mental Wellness Companion</title>
+    <link rel="stylesheet" href="Landingpage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating gradient orbs -->
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+
+    <nav class="navbar">
+        <div class="logo"><i class="fas fa-spa"></i> SootheSpace</div>
+        <div class="nav-links">
+            <div class="auth-buttons">
+                <a href="login.html" class="btn btn-login">Log In</a>
+                <a href="signup.html" class="btn btn-signup">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Start Your <span>Calm Journey</span> Today</h1>
+            <p class="hero-description">Your mind deserves a peaceful space to breathe and reflect.</p>
+            <div class="hero-buttons">
+                <button class="btn hero-btn" onclick="scrollToFeatures()"><i class="fas fa-pen-fancy"></i> Start Journaling</button>
+                <a href="BE.html" class="btn hero-btn-secondary"><i class="fas fa-wind"></i> Explore Breathing</a>
+            </div>
+        </div>
+        <div class="illustration">
+            <div class="leaf-decoration"></div>
+            <img src="LandingPagebg.jpg" alt="Meditation" class="illustration-img" />
+        </div>
+    </main>
+
+    <section id="features" class="features">
+        <div class="feature">
+            <div class="feature-icon"><i class="fas fa-book-open"></i></div>
+            <h2>Journal for Self-Analysis</h2>
+            <p>Track your thoughts and emotions daily</p>
+            <a href="introJournal.html">Go to Journal</a>
+        </div>
+
+        <div class="feature">
+            <div class="feature-icon"><i class="fas fa-heartbeat"></i></div>
+            <h2>Heart Rate Tracking</h2>
+            <p>Know your heart, know your health</p>
+            <a href="heartRate.html">View Tracking</a>
+        </div>
+
+        <div class="feature">
+            <div class="feature-icon"><i class="fas fa-moon"></i></div>
+            <h2>Sleep Tracking</h2>
+            <p>Understand your sleep, improve your life</p>
+            <a href="sleeptracker.html">View Tracking</a>
+        </div>
+
+        <div class="feature">
+            <div class="feature-icon"><i class="fas fa-praying-hands"></i></div>
+            <h2>Yoga & Meditation</h2>
+            <p>Follow guided sessions for relaxation</p>
+            <a href="med.html">Explore Self Care</a>
+        </div>
+
+        <div class="feature">
+            <div class="feature-icon"><i class="fas fa-wind"></i></div>
+            <h2>Breathing Exercises</h2>
+            <p>Practice techniques for stress relief</p>
+            <a href="BE.html">Start Breathing</a>
+        </div>
+
+        <div class="feature">
+            <div class="feature-icon"><i class="fas fa-robot"></i></div>
+            <h2>My Companion AI</h2>
+            <p>Get instant mental wellness support</p>
+            <a href="AIbot.html">Chat Now</a>
+        </div>
+
+        <div class="feature">
+            <div class="feature-icon"><i class="fas fa-video"></i></div>
+            <h2>VideoChat Support</h2>
+            <p>Connect to a professional now</p>
+            <a href="https://localhost:8181/">Connect Now</a>
+        </div>
+    </section>
+
+    <script>
+        function scrollToFeatures() {
+            const featuresSection = document.getElementById('features');
+            featuresSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                button.style.transform = 'translateY(-2px)';
+            });
+            button.addEventListener('mouseleave', () => {
+                button.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>
+

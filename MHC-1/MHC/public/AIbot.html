@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Companion - SootheSpace</title>
+    <link rel="stylesheet" href="AIbot.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating gradient orbs -->
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+    
+    <a href="dashboard.html" class="home-btn"><i class="fas fa-home"></i> Home</a>
+    
+    <div class="chat-container">
+        <h1><i class="fas fa-heart"></i> My Companion</h1>
+        <div id="chat-box" class="chat-box">
+            <div class="welcome-message">
+                <i class="fas fa-hands-holding-heart"></i>
+                <p>Hello! I'm here to support you.<br>Share how you're feeling, and I'll listen.</p>
+            </div>
+        </div>
+        <div class="input-container">
+            <input
+                type="text"
+                id="user-input"
+                placeholder="Share your thoughts..."
+                autocomplete="off"
+            />
+            <label for="image-input" class="file-label">
+                <i class="fas fa-image"></i>
+            </label>
+            <input type="file" id="image-input" accept="image/*" />
+            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
+        </div>
+    </div>
+    <script src="chat.js"></script>
+</body>
+</html>
+
