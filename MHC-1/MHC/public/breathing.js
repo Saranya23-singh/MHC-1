@@ -74,7 +74,7 @@ function stopBreathing() {
     if (circle) {
         circle.classList.remove('inhale', 'hold', 'exhale');
         circle.style.animation = 'none';
-        circle.innerText = 'Inhale';
+        circle.innerText = 'Ready';
     }
     
     if (indicator) {
