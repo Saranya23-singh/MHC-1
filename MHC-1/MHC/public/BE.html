@@ -42,27 +42,12 @@
             <div class="timer-display" id="timerDisplay"></div>
             <div class="phase-indicator" id="phaseIndicator"></div>
         </div>
-        <button id="breathButton" class="breath-btn">
+        <button id="breathButton" class="breath-btn" onclick="toggleBreathing()">
             <i class="fas fa-play"></i> Start
         </button>
     </div>
 
-    <script src="BE.js"></script>
-    <script>
-        // Direct event listener to ensure button works
-        document.addEventListener('DOMContentLoaded', function() {
-            const btn = document.getElementById('breathButton');
-            if (btn) {
-                btn.addEventListener('click', function() {
-                    if (typeof toggleBreathing === 'function') {
-                        toggleBreathing();
-                    } else {
-                        console.error('toggleBreathing function not found!');
-                    }
-                });
-            }
-        });
-    </script>
+    <script src="breathing.js"></script>
 </body>
 
 </html>
