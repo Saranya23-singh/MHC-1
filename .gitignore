@@ -51,6 +51,14 @@ ml_model/stress_le.pkl
 .vscode/settings.json
 .idea/
 
+# Datasets
+MHC-1/MHC/datasets/
+**/datasets/
+*.csv
+*.xlsx
+*.zip
+*.txt
+
 # Databases
 *.sqlite
 *.db
