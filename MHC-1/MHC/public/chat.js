@@ -1,7 +1,7 @@
 // AI Companion Chat JavaScript
 // Uses backend server which connects to Gemini API
 
-const API_URL = "http://localhost:3000/api/chat";
+const API_URL = "http://localhost:3000/api/enhanced-chat";
 
 // Initialize chat when page loads
 document.addEventListener("DOMContentLoaded", () => {
@@ -41,10 +41,24 @@ async function sendMessage() {
 
     try {
         // Send message to backend API
+        // Get user metrics from localStorage
+        const sleepData = JSON.parse(localStorage.getItem('sleepData') || '[]');
+        const heartData = JSON.parse(localStorage.getItem('heartRateData') || '[]');
+        const assessment = JSON.parse(localStorage.getItem('lastAssessment') || null);
+        
+        const userMetrics = {
+            avgSleep: sleepData.length > 0 ? (sleepData.reduce((sum, d) => sum + parseFloat(d.duration), 0) / sleepData.length).toFixed(1) : null,
+            avgHR: heartData.length > 0 ? Math.round(heartData.reduce((sum, d) => sum + parseInt(d.heartRate), 0) / heartData.length) : null,
+            anxiety: assessment?.score || null
+        };
+        
         const response = await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message }),
+            body: JSON.stringify({ 
+                message, 
+                userData: userMetrics 
+            }),
         });
 
         console.log("Response status:", response.status);

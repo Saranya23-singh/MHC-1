@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calming Games - SootheSpace</title>
+    <link rel="stylesheet" href="games.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating gradient orbs -->
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+
+    <div class="top-buttons">
+        <a href="dashboard.html" class="home-btn"><i class="fas fa-home"></i> Home</a>
+        <button class="mute-btn" id="muteBtn" onclick="toggleMute()">
+            <i class="fas fa-volume-up"></i> <span id="muteText">Sound On</span>
+        </button>
+    </div>
+
+    <div class="games-container">
+        <div class="header-section" id="mainHeader">
+            <div class="header-icon"><i class="fas fa-spa"></i></div>
+            <h1>Calming Games</h1>
+            <p>Relax your mind with these gentle activities</p>
+        </div>
+
+        <!-- Games Selection -->
+        <div class="games-grid" id="gamesGrid">
+            <div class="game-card" onclick="startGame('bubblewrap')">
+                <div class="game-icon"><i class="fas fa-bubble-tea"></i></div>
+                <h3>Bubble Wrap</h3>
+                <p>Pop soft bubbles for sensory relief</p>
+            </div>
+            <div class="game-card" onclick="startGame('infinityloop')">
+                <div class="game-icon"><i class="fas fa-infinity"></i></div>
+                <h3>Infinity Loop</h3>
+                <p>Create beautiful connected loops</p>
+            </div>
+            <div class="game-card" onclick="startGame('calm2048')">
+                <div class="game-icon"><i class="fas fa-th"></i></div>
+                <h3>2048 Calm</h3>
+                <p>Peaceful number puzzle</p>
+            </div>
+            <div class="game-card" onclick="startGame('grounding')">
+                <div class="game-icon"><i class="fas fa-leaf"></i></div>
+                <h3>5-4-3-2-1 Grounding</h3>
+                <p>Mindfulness breathing exercise</p>
+            </div>
+            <div class="game-card" onclick="startGame('puzzlebuilder')">
+                <div class="game-icon"><i class="fas fa-puzzle-piece"></i></div>
+                <h3>Puzzle Builder</h3>
+                <p>Fit shapes into place</p>
+            </div>
+        </div>
+
+        <!-- Bubble Wrap Game -->
+        <div class="game-area" id="bubblewrapGame">
+            <div class="game-header">
+                <h2><i class="fas fa-bubble-tea"></i> Bubble Wrap</h2>
+                <button class="back-btn" onclick="backToGames()"><i class="fas fa-arrow-left"></i> Back</button>
+            </div>
+            <p class="instructions" style="text-align: center; color: #6B7C85; margin-bottom: 1rem;">
+                Tap the bubbles to pop them. They will regenerate for endless relaxation.
+            </p>
+            <div class="bubble-grid" id="bubbleGrid"></div>
+        </div>
+
+        <!-- Infinity Loop Game -->
+        <div class="game-area" id="infinityloopGame">
+            <div class="game-header">
+                <h2><i class="fas fa-infinity"></i> Infinity Loop</h2>
+                <button class="back-btn" onclick="backToGames()"><i class="fas fa-arrow-left"></i> Back</button>
+            </div>
+            <p class="instructions" style="text-align: center; color: #6B7C85; margin-bottom: 1rem;">
+                Rotate tiles until all lines connect into continuous loops.
+            </p>
+            <div class="loop-container">
+                <div class="loop-grid" id="loopGrid"></div>
+                <div class="loop-message" id="loopMessage" style="display:none;">
+                    Beautiful loop created 🌿 Keep going.
+                </div>
+                <button class="new-loop-btn" onclick="generateNewLoop()">New Pattern</button>
+            </div>
+        </div>
+
+        <!-- 2048 Calm Game -->
+        <div class="game-area" id="calm2048Game">
+            <div class="game-header">
+                <h2><i class="fas fa-th"></i> 2048 Calm</h2>
+                <button class="back-btn" onclick="backToGames()"><i class="fas fa-arrow-left"></i> Back</button>
+            </div>
+            <p class="instructions" style="text-align: center; color: #6B7C85; margin-bottom: 1rem;">
+                Use arrow keys or swipe to move tiles. Match numbers to merge them.
+            </p>
+            <div class="calm2048-container">
+                <div class="score-display">
+                    <span>Score: <span id="gameScore">0</span></span>
+                    <span>Highest: <span id="gameHighest">0</span></span>
+                </div>
+                <div class="board-container">
+                    <div class="game-board" id="gameBoard"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grounding Exercise -->
+        <div class="game-area" id="groundingGame">
+            <div class="game-header">
+                <h2><i class="fas fa-leaf"></i> 5-4-3-2-1 Grounding</h2>
+                <button class="back-btn" onclick="backToGames()"><i class="fas fa-arrow-left"></i> Back</button>
+            </div>
+            <div class="grounding-container">
+                <div class="step-indicator" id="stepIndicator"></div>
+                <div class="current-step" id="currentStep">
+                    <h2 id="stepTitle">Let's Begin</h2>
+                    <p id="stepDesc">Take a deep breath and focus on the present moment.</p>
+                    <div class="input-area" id="inputArea">
+                        <button class="next-btn" onclick="startGrounding()">Begin Exercise</button>
+                    </div>
+                </div>
+                <div class="completion-message" id="completionMessage" style="display:none;">
+                    <i class="fas fa-heart"></i>
+                    <h2>You are grounded</h2>
+                    <p>Take a slow breath. You're here, you're present.</p>
+                    <button class="next-btn" onclick="resetGrounding()">Start Again</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Puzzle Builder -->
+        <div class="game-area" id="puzzlebuilderGame">
+            <div class="game-header">
+                <h2><i class="fas fa-puzzle-piece"></i> Puzzle Builder</h2>
+                <button class="back-btn" onclick="backToGames()"><i class="fas fa-arrow-left"></i> Back</button>
+            </div>
+            <p class="instructions" style="text-align: center; color: #6B7C85; margin-bottom: 1rem;">
+                Drag shapes into the board to complete the pattern.
+            </p>
+            <div class="puzzle-builder-container">
+                <div class="shapes-area">
+                    <h3>Shapes</h3>
+                    <div class="shapes-container" id="shapesContainer"></div>
+                </div>
+                <div class="board-area">
+                    <h3>Board</h3>
+                    <div class="puzzle-board" id="puzzleBoard"></div>
+                </div>
+            </div>
+            <div class="puzzle-complete" id="puzzleComplete" style="display:none;">
+                <i class="fas fa-check-circle"></i>
+                <p>Perfect fit! 🌿</p>
+                <button class="reset-puzzle-btn" onclick="resetPuzzle()">New Puzzle</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sound effects -->
+    <audio id="popSound" src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleRsAZrDk4b17FAFPqOTStnISBF+t5d+1eR4GQp3i1r17IgE7i9/UsHYkBjeH2tOzcSMHLonYz7R0JQUvhtbNsXQkBCqE1s2ycSMEKYHUy7FwIwQpgNLLsW8jBCiA0MuxbyMEKIHRy7FuIwQogNDLsW0jBCiAz8uxbCMEKIHOy7FqIwQogc3LsWkjBCiBzcuwaSMGKIHNy7BoIwYogcrKr2cjBiiBycmuZiMGKIHEyK1kIwYogcPIrGMjBiiBw8erYiMGKIHDx6thIwYogcPHqmAjBiiBw8aoYCMGKIHExahgIwYogcTFqF8jBiiBxMWoXiMGKIHDxadfIwYogcPFpl8jBiiBw8WlXiMGKIHDxWVdIwYogcPFZFwjBiiBxMVkWyMGKIHDxGRaIwYogcPEZFkjBiiBw8NjWSIGKIHDw2NYIgYogcPDYFkhBiiBw8JgWCEGKIHBwaBYIQYogcHBoFghBiiBwcFfWCEGKIHBwV9YIQYogcHBXlghBiiBwcFeWCEGKIHBwV1YIQYogcHBXVghBiiBwcFc2CEGKIHBwVzYIQYogcHBXFghBiiBwcFb2CEGKIHBwVvYIQYogcHBW9ghBiiBwcFbmCEGKIHBwVuYIQYogcHBW5ghBiiBwcFbWCEGKIHBwVtYIQYogcHBWlghBiiBwcFaWCEGKIHBwVpYIQYogcHBWlghBiiBwcFaWCEGKIHBwVpYIQYogcHBWlghBiiBwcFaWCEGKIHBwVpYIQYogcHBWlghBiiBwcFaWCEGKIHBwVpYIQYogcHBWlghBiiBwcFaWCEGKIHBwVpYIQYogcHBWlghBiiBwcFaWCEGKIHBwVpYIQYogcHBWlghBiiBwcFaWCEGKIHBwVpYIQYogcHBWlghBiiBwcFaWCEGKIHBwVpYIQYogcHBWlghBiiBwcFaWCEGKIHBwVpYIQYogcHBWlghBiiBwcFaWCEGKY"></audio>
+
+    <!-- Game Scripts -->
+    <script src="bubblewrap.js"></script>
+    <script src="infinityloop.js"></script>
+    <script src="calm2048.js"></script>
+    <script src="grounding.js"></script>
+    <script src="puzzlebuilder.js"></script>
+    
+    <!-- Main Games Controller -->
+    <script>
+        let isMuted = false;
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            const btn = document.getElementById('muteBtn');
+            const text = document.getElementById('muteText');
+            if (isMuted) {
+                btn.classList.add('muted');
+                btn.innerHTML = '<i class="fas fa-volume-mute"></i> <span>Sound Off</span>';
+            } else {
+                btn.classList.remove('muted');
+                btn.innerHTML = '<i class="fas fa-volume-up"></i> <span>Sound On</span>';
+            }
+        }
+
+        function playPopSound() {
+            if (!isMuted) {
+                const audio = document.getElementById('popSound');
+                audio.volume = 0.3;
+                audio.currentTime = 0;
+                audio.play().catch(() => {});
+            }
+        }
+
+        function startGame(game) {
+            console.log("Starting game:", game);
+            document.getElementById('gamesGrid').style.display = 'none';
+            document.getElementById('mainHeader').style.display = 'none';
+            
+            document.getElementById(game + 'Game').classList.add('active');
+            
+            if (game === 'bubblewrap') {
+                console.log("Initializing Bubble Wrap...");
+                initBubbleWrap();
+            }
+            if (game === 'infinityloop') {
+                console.log("Initializing Infinity Loop...");
+                initInfinityLoop();
+            }
+            if (game === 'calm2048') {
+                console.log("Initializing 2048 Calm...");
+                initCalm2048();
+            }
+            if (game === 'grounding') {
+                console.log("Initializing Grounding...");
+                initGrounding();
+            }
+            if (game === 'puzzlebuilder') {
+                console.log("Initializing Puzzle Builder...");
+                initPuzzleBuilder();
+            }
+        }
+
+        function backToGames() {
+            document.querySelectorAll('.game-area').forEach(area => area.classList.remove('active'));
+            document.getElementById('gamesGrid').style.display = 'grid';
+            document.getElementById('mainHeader').style.display = 'block';
+        }
+
+        // Make generateNewLoop globally accessible
+        window.generateNewLoop = function() {
+            if (typeof initInfinityLoop === 'function') {
+                initInfinityLoop();
+            }
+        };
+    </script>
+</body>
+</html>
+

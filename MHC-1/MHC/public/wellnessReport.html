@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellness Medical Report - SootheSpace</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="wellnessReport.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <a href="dashboard.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Dashboard
+    </a>
+
+    <div class="report-container">
+        <!-- HEADER -->
+        <header class="report-header">
+            <div class="header-title">
+                <i class="fas fa-file-medical-alt"></i>
+                <h1>Wellness Medical Report</h1>
+            </div>
+            <div class="header-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Report Date</span>
+                    <span class="meta-value" id="reportDate"></span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Wellness Score</span>
+                    <span class="meta-value score-lg" id="wellnessScore">Calculating...</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Status</span>
+                    <span class="status-badge" id="overallStatus">Loading...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- HEALTH METRICS ROW -->
+        <section class="metrics-row">
+            <div class="metric-card" id="sleep-card">
+                <div class="metric-icon sleep-icon">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="metric-content">
+                    <h3>Sleep Health</h3>
+                    <div class="metric-value" id="sleepAvg">No Data</div>
+                    <div class="metric-range" id="sleepRange">--</div>
+                    <div class="metric-desc" id="sleepDesc"></div>
+                    <div class="metric-status" id="sleepStatus"></div>
+                </div>
+            </div>
+
+            <div class="metric-card" id="heart-card">
+                <div class="metric-icon heart-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <div class="metric-content">
+                    <h3>Heart Rate</h3>
+                    <div class="metric-value" id="heartAvg">No Data</div>
+                    <div class="metric-range" id="heartRange">--</div>
+                    <div class="metric-desc" id="heartDesc"></div>
+                    <div class="metric-status" id="heartStatus"></div>
+                </div>
+            </div>
+
+            <div class="metric-card" id="anxiety-card">
+                <div class="metric-icon anxiety-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="metric-content">
+                    <h3>Anxiety Level</h3>
+                    <div class="metric-value" id="anxietyAvg">No Data</div>
+                    <div class="metric-range" id="anxietyRange">--</div>
+                    <div class="metric-desc" id="anxietyDesc"></div>
+                    <div class="metric-status" id="anxietyStatus"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CHARTS ROW -->
+        <section class="charts-section">
+            <div class="chart-grid">
+                <div class="chart-card">
+                    <h3>Sleep Trend (7 Days)</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="sleepTrendChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>Heart Rate Trend</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="heartTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STRESS GAUGE & ANALYSIS -->
+        <section class="stress-section">
+            <div class="stress-gauge">
+                <h3>Stress Level Indicator</h3>
+                <div class="gauge-container">
+                    <svg class="stress-gauge-svg" viewBox="0 0 300 160">
+                        <defs>
+                            <linearGradient id="gaugeBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#E8F5E9"/>
+                                <stop offset="100%" stop-color="#F0F7F4"/>
+                            </linearGradient>
+                        </defs>
+                        <path class="gauge-bg" d="M 30 120 Q 150 20 270 120" stroke="url(#gaugeBg)" stroke-width="20" fill="none" stroke-linecap="round"/>
+                        <path class="gauge-fill" id="gaugeFill" d="M 30 120 Q 150 20 270 120" stroke="#7BAE7F" stroke-width="20" fill="none" stroke-linecap="round" stroke-dasharray="400" stroke-dashoffset="400"/>
+                        <circle class="gauge-needle" cx="150" cy="120" r="8" fill="#2F6F57"/>
+                    </svg>
+                    <div class="gauge-value">
+                        <div class="stress-score" id="stressScore">0</div>
+                        <div class="stress-label" id="stressLabel">Low</div>
+                    </div>
+                </div>
+                <div class="stress-message" id="stressMessage"></div>
+            </div>
+        </section>
+
+        <!-- WEEKLY TRENDS -->
+        <section class="trends-section">
+            <h3>Weekly Wellness Trends</h3>
+            <div class="chart-wrapper full-width">
+                <canvas id="weeklyTrendsChart"></canvas>
+            </div>
+        </section>
+
+        <!-- RECOMMENDATIONS -->
+        <section class="recommendations-section">
+            <h3>Personalized Recommendations</h3>
+            <div class="recs-container" id="recommendations">
+                <div class="rec-placeholder">
+                    Complete some tracking to get personalized advice
+                </div>
+            </div>
+        </section>
+
+        <!-- DOWNLOAD -->
+        <div class="action-buttons">
+            <button class="download-btn" onclick="downloadPDF()">
+                <i class="fas fa-download"></i> Download PDF Report
+            </button>
+            <button class="refresh-btn" onclick="generateReport()">
+                <i class="fas fa-sync-alt"></i> Refresh Data
+            </button>
+        </div>
+    </div>
+
+    <script src="wellnessReport.js"></script>
+    <style>
+      .ai-badge { background: linear-gradient(135deg, #6C5CE7, #A29BFE); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; }
+    </style>
+
+</body>
+</html>
+

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Assessment - Tranquoria</title>
+    <link rel="stylesheet" href="assessment.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating gradient orbs -->
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+
+    <a href="dashboard.html" class="home-btn"><i class="fas fa-home"></i> Home</a>
+
+    <div class="assessment-container">
+        <div class="header-section">
+            <div class="header-icon"><i class="fas fa-clipboard-check"></i></div>
+            <h1>Mental Health Self Assessment</h1>
+            <p>Take a moment to check in with yourself</p>
+        </div>
+
+        <!-- Info Card -->
+        <div class="info-card">
+            <i class="fas fa-info-circle"></i>
+            <p>This assessment is based on the GAD-7 scale (Generalized Anxiety Disorder-7). It helps identify anxiety levels. This is not a medical diagnosis - please consult a professional for proper evaluation.</p>
+        </div>
+
+        <!-- Questionnaire -->
+        <div class="questionnaire" id="questionnaire">
+            <h2><i class="fas fa-question-circle"></i> Over the last 2 weeks, how often have you been bothered by the following problems?</h2>
+            
+            <div class="progress-container">
+                <div class="progress-text">
+                    <span>Progress</span>
+                    <span id="progressText">0 of 7</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div id="questionsContainer"></div>
+
+            <button class="submit-btn" id="submitBtn" onclick="calculateResults()" disabled>
+                <i class="fas fa-calculator"></i> Calculate Results
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="results">
+            <div class="result-header">
+                <div class="result-icon" id="resultIcon"><i class="fas fa-heart"></i></div>
+                <h2 class="result-title" id="resultTitle">Your Result</h2>
+                <p class="result-score" id="resultScore">Total Score: 0</p>
+            </div>
+
+            <div class="result-description" id="resultDescription"></div>
+
+            <div class="recommendations">
+                <h3><i class="fas fa-lightbulb"></i> Recommended Resources</h3>
+                <div class="recommendations-grid" id="recommendationsGrid"></div>
+            </div>
+
+            <button class="retake-btn" onclick="retakeAssessment()"><i class="fas fa-redo"></i> Retake Assessment</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { id: 1, text: "Feeling nervous, anxious, or on edge?", options: [{value:0,label:"Not at all"},{value:1,label:"Several days"},{value:2,label:"More than half the days"},{value:3,label:"Nearly every day"}] },
+            { id: 2, text: "Not being able to stop or control worrying?", options: [{value:0,label:"Not at all"},{value:1,label:"Several days"},{value:2,label:"More than half the days"},{value:3,label:"Nearly every day"}] },
+            { id: 3, text: "Worrying too much about different things?", options: [{value:0,label:"Not at all"},{value:1,label:"Several days"},{value:2,label:"More than half the days"},{value:3,label:"Nearly every day"}] },
+            { id: 4, text: "Trouble relaxing?", options: [{value:0,label:"Not at all"},{value:1,label:"Several days"},{value:2,label:"More than half the days"},{value:3,label:"Nearly every day"}] },
+            { id: 5, text: "Being so restless that it is hard to sit still?", options: [{value:0,label:"Not at all"},{value:1,label:"Several days"},{value:2,label:"More than half the days"},{value:3,label:"Nearly every day"}] },
+            { id: 6, text: "Becoming easily annoyed or irritable?", options: [{value:0,label:"Not at all"},{value:1,label:"Several days"},{value:2,label:"More than half the days"},{value:3,label:"Nearly every day"}] },
+            { id: 7, text: "Feeling afraid as if something awful might happen?", options: [{value:0,label:"Not at all"},{value:1,label:"Several days"},{value:2,label:"More than half the days"},{value:3,label:"Nearly every day"}] }
+        ];
+
+        const answers = {};
+
+        function initQuestionnaire() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = questions.map(q => `
+                <div class="question" data-question="${q.id}">
+                    <div class="question-text"><span class="question-number">${q.id}</span>${q.text}</div>
+                    <div class="options">
+                        ${q.options.map(opt => `
+                            <label class="option" data-question="${q.id}" data-value="${opt.value}">
+                                <input type="radio" name="q${q.id}" value="${opt.value}">
+                                <span class="option-radio"></span>
+                                <span class="option-label">${opt.label}</span>
+                            </label>`).join('')}
+                    </div>
+                </div>`).join('');
+
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionId = this.dataset.question;
+                    const value = parseInt(this.dataset.value);
+                    document.querySelectorAll(`.option[data-question="${questionId}"]`).forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    answers[questionId] = value;
+                    updateProgress();
+                    checkAllAnswered();
+                });
+            });
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = Object.keys(answers).length;
+            document.getElementById('progressFill').style.width = `${(answered/7)*100}%`;
+            document.getElementById('progressText').textContent = `${answered} of 7`;
+        }
+
+        function checkAllAnswered() {
+            document.getElementById('submitBtn').disabled = Object.keys(answers).length !== 7;
+        }
+
+        function calculateResults() {
+            let totalScore = 0;
+            for (let i = 1; i <= 7; i++) totalScore += answers[i] || 0;
+
+            let category, description, recommendations;
+            if (totalScore <= 4) { category = 'minimal'; description = 'Your responses suggest minimal anxiety symptoms.'; recommendations = getMinimalRecommendations(); }
+            else if (totalScore <= 9) { category = 'mild'; description = 'Your responses suggest mild anxiety.'; recommendations = getMildRecommendations(); }
+            else if (totalScore <= 14) { category = 'moderate'; description = 'Your responses suggest moderate anxiety.'; recommendations = getModerateRecommendations(); }
+            else { category = 'severe'; description = 'Your responses suggest severe anxiety symptoms.'; recommendations = getSevereRecommendations(); }
+
+            displayResults(totalScore, category, description, recommendations);
+        }
+
+        function getMinimalRecommendations() { return [{icon:'fa-wind',title:'Breathing Exercise',desc:'4-7-8 technique',link:'BE.html'},{icon:'fa-book-open',title:'Journaling',desc:'Express your thoughts',link:'journal.html'},{icon:'fa-music',title:'Calming Sounds',desc:'Relax with nature',link:'dashboard.html'}]; }
+        function getMildRecommendations() { return [{icon:'fa-wind',title:'Breathing Exercise',desc:'Reduce stress',link:'BE.html'},{icon:'fa-users',title:'Peer Support',desc:'Connect with others',link:'peer-support.html'},{icon:'fa-robot',title:'AI Companion',desc:'Chat for support',link:'AIbot.html'}]; }
+        function getModerateRecommendations() { return [{icon:'fa-user-md',title:'Psychiatrist',desc:'Book a session',link:'psychiatrists.html'},{icon:'fa-users',title:'Peer Support',desc:'Connect with others',link:'peer-support.html'},{icon:'fa-gamepad',title:'Relaxation Games',desc:'Reduce anxiety',link:'games.html'},{icon:'fa-wind',title:'Breathing Exercise',desc:'Calm your mind',link:'BE.html'}]; }
+        function getSevereRecommendations() { return [{icon:'fa-user-md',title:'Psychiatrist',desc:'Get professional help',link:'psychiatrists.html'},{icon:'fa-phone',title:'Crisis Helpline',desc:'Immediate support',link:'#'},{icon:'fa-users',title:'Peer Support',desc:'You are not alone',link:'peer-support.html'},{icon:'fa-gamepad',title:'Calming Activities',desc:'Find peace',link:'games.html'}]; }
+
+        function displayResults(score, category, description, recommendations) {
+            document.getElementById('questionnaire').style.display = 'none';
+            const resultsSection = document.getElementById('results');
+            resultsSection.classList.add('show');
+
+            const iconEl = document.getElementById('resultIcon');
+            iconEl.className = `result-icon ${category}`;
+            const titles = {minimal:'Minimal Anxiety',mild:'Mild Anxiety',moderate:'Moderate Anxiety',severe:'Severe Anxiety'};
+            const icons = {minimal:'fa-smile',mild:'fa-meh',moderate:'fa-frown-open',severe:'fa-exclamation-triangle'};
+            
+            document.getElementById('resultTitle').textContent = titles[category];
+            document.getElementById('resultScore').textContent = `Total Score: ${score} / 21`;
+            document.getElementById('resultDescription').textContent = description;
+            iconEl.innerHTML = `<i class="fas ${icons[category]}"></i>`;
+
+            document.getElementById('recommendationsGrid').innerHTML = recommendations.map(rec => `
+                <a href="${rec.link}" class="recommendation-card">
+                    <div class="recommendation-icon"><i class="fas ${rec.icon}"></i></div>
+                    <div class="recommendation-text"><h4>${rec.title}</h4><p>${rec.desc}</p></div>
+                </a>`).join('');
+
+            localStorage.setItem('lastAssessment', JSON.stringify({score,category,date:new Date().toISOString()}));
+        }
+
+        function retakeAssessment() {
+            for (let i = 1; i <= 7; i++) delete answers[i];
+            document.getElementById('results').classList.remove('show');
+            document.getElementById('questionnaire').style.display = 'block';
+            document.getElementById('submitBtn').disabled = true;
+            initQuestionnaire();
+        }
+
+        document.addEventListener('DOMContentLoaded', initQuestionnaire);
+    </script>
+</body>
+</html>
+

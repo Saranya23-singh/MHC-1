@@ -1,0 +1,543 @@
+/* SootheSpace - Psychiatrist Consultation Theme */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Nunito', 'Segoe UI', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #F7F5F2 0%, #E8F5E9 50%, #DFF5E1 100%);
+    min-height: 100vh;
+    color: #1F3D2B;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Floating gradient orbs */
+.floating-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    z-index: -1;
+    animation: floatOrb 20s ease-in-out infinite;
+}
+
+.orb-1 {
+    width: 350px;
+    height: 350px;
+    background: linear-gradient(135deg, #7BAE7F 0%, #2F6F57 100%);
+    top: -80px;
+    left: 250px;
+    animation-delay: 0s;
+}
+
+.orb-2 {
+    width: 400px;
+    height: 400px;
+    background: linear-gradient(135deg, #2ECC71 0%, #7BAE7F 100%);
+    bottom: -100px;
+    right: 300px;
+    animation-delay: -7s;
+}
+
+.orb-3 {
+    width: 250px;
+    height: 250px;
+    background: linear-gradient(135deg, #F47C3C 0%, #e66a2c 100%);
+    top: 40%;
+    left: 60%;
+    animation-delay: -14s;
+    opacity: 0.2;
+}
+
+@keyframes floatOrb {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(20px, -20px) scale(1.05); }
+    50% { transform: translate(-15px, 15px) scale(0.95); }
+    75% { transform: translate(15px, 10px) scale(1.02); }
+}
+
+/* Home Button */
+.home-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #1F3D2B 0%, #2F6F57 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(31, 61, 43, 0.3);
+    z-index: 1000;
+}
+
+.home-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(31, 61, 43, 0.4);
+}
+
+/* Container */
+.psych-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 20px 40px;
+}
+
+.header-section {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.header-section h1 {
+    font-size: 2.5rem;
+    color: #1F3D2B;
+    margin-bottom: 0.5rem;
+}
+
+.header-section p {
+    color: #6B7C85;
+    font-size: 1.1rem;
+}
+
+.header-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #DFF5E1 0%, #E8F5E9 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    color: #2F6F57;
+}
+
+/* Psychiatrists Grid */
+.psych-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.psych-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 40px rgba(31, 61, 43, 0.08);
+    border: 2px solid transparent;
+}
+
+.psych-card:hover {
+    transform: translateY(-8px);
+    border-color: #2F6F57;
+    box-shadow: 0 15px 50px rgba(47, 111, 87, 0.2);
+}
+
+.psych-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.psych-avatar {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #2F6F57 0%, #7BAE7F 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: white;
+}
+
+.psych-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1F3D2B;
+}
+
+.psych-title {
+    color: #6B7C85;
+    font-size: 0.9rem;
+}
+
+.psych-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.psych-detail {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #2F6F57;
+    font-size: 0.95rem;
+}
+
+.psych-detail i {
+    width: 24px;
+    text-align: center;
+    color: #7BAE7F;
+}
+
+.psych-fee {
+    background: linear-gradient(135deg, #DFF5E1 0%, #E8F5E9 100%);
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.psych-fee .label {
+    color: #6B7C85;
+    font-size: 0.85rem;
+}
+
+.psych-fee .amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2F6F57;
+}
+
+.slots-available {
+    margin-bottom: 1.5rem;
+}
+
+.slots-title {
+    font-size: 0.9rem;
+    color: #6B7C85;
+    margin-bottom: 0.8rem;
+}
+
+.slots-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.slot {
+    padding: 8px 14px;
+    background: white;
+    border: 2px solid rgba(123, 174, 127, 0.3);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #2F6F57;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.slot:hover {
+    border-color: #2F6F57;
+    background: #DFF5E1;
+}
+
+.slot.booked {
+    background: #f0f0f0;
+    color: #999;
+    cursor: not-allowed;
+    border-color: #e0e0e0;
+}
+
+.book-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #2F6F57 0%, #3d8b6a 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(47, 111, 87, 0.3);
+}
+
+.book-btn:hover {
+    background: linear-gradient(135deg, #1F3D2B 0%, #2F6F57 100%);
+    transform: translateY(-2px);
+}
+
+/* Booking Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal {
+    background: white;
+    border-radius: 24px;
+    padding: 2.5rem;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.9);
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.active .modal {
+    transform: scale(1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.modal-header h2 {
+    color: #1F3D2B;
+    font-size: 1.5rem;
+}
+
+.close-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: #f0f0f0;
+    color: #666;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.modal-body .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.modal-body label {
+    display: block;
+    color: #1F3D2B;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.modal-body input,
+.modal-body select {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid rgba(123, 174, 127, 0.3);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    background: white;
+    color: #1F3D2B;
+    transition: all 0.3s ease;
+}
+
+.modal-body input:focus,
+.modal-body select:focus {
+    outline: none;
+    border-color: #2F6F57;
+    box-shadow: 0 0 0 4px rgba(47, 111, 87, 0.1);
+}
+
+.modal-body .selected-slot {
+    padding: 12px;
+    background: linear-gradient(135deg, #DFF5E1 0%, #E8F5E9 100%);
+    border-radius: 10px;
+    color: #2F6F57;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.modal-footer button {
+    flex: 1;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cancel-btn {
+    background: #f0f0f0;
+    border: none;
+    color: #666;
+}
+
+.cancel-btn:hover {
+    background: #e0e0e0;
+}
+
+.confirm-btn {
+    background: linear-gradient(135deg, #2F6F57 0%, #3d8b6a 100%);
+    border: none;
+    color: white;
+    box-shadow: 0 4px 15px rgba(47, 111, 87, 0.3);
+}
+
+.confirm-btn:hover {
+    background: linear-gradient(135deg, #1F3D2B 0%, #2F6F57 100%);
+}
+
+/* Booking Success */
+.booking-success {
+    text-align: center;
+    padding: 2rem;
+}
+
+.booking-success i {
+    font-size: 4rem;
+    color: #2ECC71;
+    margin-bottom: 1rem;
+}
+
+.booking-success h3 {
+    color: #1F3D2B;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.booking-success p {
+    color: #6B7C85;
+}
+
+/* My Bookings Section */
+.my-bookings {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 10px 40px rgba(31, 61, 43, 0.08);
+}
+
+.my-bookings h2 {
+    color: #2F6F57;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bookings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.booking-item {
+    background: linear-gradient(135deg, #DFF5E1 0%, #E8F5E9 100%);
+    border-radius: 12px;
+    padding: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.booking-info h4 {
+    color: #1F3D2B;
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+}
+
+.booking-info p {
+    color: #2F6F57;
+    font-size: 0.9rem;
+}
+
+.booking-status {
+    padding: 6px 14px;
+    background: #2F6F57;
+    color: white;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.no-bookings {
+    text-align: center;
+    padding: 2rem;
+    color: #6B7C85;
+}
+
+/* Message Toast */
+.message {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: linear-gradient(135deg, #2F6F57 0%, #3d8b6a 100%);
+    color: white;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 10px 30px rgba(47, 111, 87, 0.4);
+    opacity: 0;
+    transition: all 0.4s ease;
+    z-index: 3000;
+}
+
+.message.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .psych-container {
+        padding: 80px 15px 30px;
+    }
+    
+    .header-section h1 {
+        font-size: 2rem;
+    }
+    
+    .psych-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal {
+        padding: 1.5rem;
+    }
+}
+
