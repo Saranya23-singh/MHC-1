@@ -63,3 +63,5 @@ MHC-1/MHC/datasets/
 *.sqlite
 *.db
 
+datasets/
+*.csv
