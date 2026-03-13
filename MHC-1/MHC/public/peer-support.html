@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peer Support - Tranquoria</title>
+    <link rel="stylesheet" href="peer-support.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating gradient orbs -->
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+
+    <a href="dashboard.html" class="home-btn"><i class="fas fa-home"></i> Home</a>
+
+    <div class="peer-container">
+        <div class="header-section">
+            <div class="header-icon"><i class="fas fa-users"></i></div>
+            <h1>Peer Support Connection</h1>
+            <p>Connect with others who understand what you're going through</p>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="registration-section">
+            <h2><i class="fas fa-user-plus"></i> Join Our Community</h2>
+            <form id="peerForm" class="form-grid">
+                <div class="form-group">
+                    <label for="peerName"><i class="fas fa-user"></i> Your Name</label>
+                    <input type="text" id="peerName" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="ageGroup"><i class="fas fa-birthday-cake"></i> Age Group</label>
+                    <select id="ageGroup" required>
+                        <option value="">Select age group</option>
+                        <option value="13-17">13-17 (Teen)</option>
+                        <option value="18-24">18-24 (Young Adult)</option>
+                        <option value="25-34">25-34 (Adult)</option>
+                        <option value="35-44">35-44 (Middle Adult)</option>
+                        <option value="45+">45+ (Mature Adult)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="concern"><i class="fas fa-heart"></i> Primary Concern</label>
+                    <select id="concern" required>
+                        <option value="">Select your primary concern</option>
+                        <option value="Anxiety">Anxiety</option>
+                        <option value="Stress">Stress</option>
+                        <option value="Loneliness">Loneliness</option>
+                        <option value="Exam Pressure">Exam Pressure</option>
+                        <option value="Trauma">Trauma</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="communication"><i class="fas fa-comments"></i> Preferred Communication</label>
+                    <select id="communication" required>
+                        <option value="">Select preference</option>
+                        <option value="Chat">Chat</option>
+                        <option value="Video">Video Call</option>
+                        <option value="Voice">Voice Call</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="availability"><i class="fas fa-clock"></i> Availability</label>
+                    <select id="availability" required>
+                        <option value="">Select time preference</option>
+                        <option value="Morning">Morning (6AM - 12PM)</option>
+                        <option value="Afternoon">Afternoon (12PM - 6PM)</option>
+                        <option value="Evening">Evening (6PM - 10PM)</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-search"></i> Find Matched Peers
+                </button>
+            </form>
+        </div>
+
+        <!-- Matched Peers Section -->
+        <div class="matched-section">
+            <h2><i class="fas fa-handshake"></i> Matched Peers</h2>
+            <div id="peersList" class="peers-grid">
+                <div class="no-matches">
+                    <i class="fas fa-search"></i>
+                    <h3>No matches yet</h3>
+                    <p>Fill out the form above to find peers with similar concerns</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="message" class="message">
+        <i class="fas fa-check-circle"></i> <span id="messageText">Profile saved!</span>
+    </div>
+
+    <script>
+        // Load and display matched peers on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadMatchedPeers();
+        });
+
+        // Handle form submission
+        document.getElementById('peerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const peerData = {
+                name: document.getElementById('peerName').value,
+                ageGroup: document.getElementById('ageGroup').value,
+                concern: document.getElementById('concern').value,
+                communication: document.getElementById('communication').value,
+                availability: document.getElementById('availability').value,
+                timestamp: Date.now()
+            };
+
+            // Get existing peers from localStorage
+            let peers = JSON.parse(localStorage.getItem('peerSupportPeers')) || [];
+            
+            // Check if user already exists
+            const existingIndex = peers.findIndex(p => p.name === peerData.name);
+            if (existingIndex >= 0) {
+                peers[existingIndex] = peerData;
+            } else {
+                peers.push(peerData);
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('peerSupportPeers', JSON.stringify(peers));
+            
+            // Show success message
+            showMessage('Profile saved! Finding matched peers...');
+            
+            // Reload matched peers
+            loadMatchedPeers();
+        });
+
+        // Load and display matched peers
+        function loadMatchedPeers() {
+            const peers = JSON.parse(localStorage.getItem('peerSupportPeers')) || [];
+            const currentUser = peers[peers.length - 1]; // Get the most recent user
+            
+            if (!currentUser) {
+                document.getElementById('peersList').innerHTML = `
+                    <div class="no-matches">
+                        <i class="fas fa-search"></i>
+                        <h3>No matches yet</h3>
+                        <p>Fill out the form above to find peers with similar concerns</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Find peers with matching primary concern (excluding current user)
+            const matchedPeers = peers.filter(peer => 
+                peer.concern === currentUser.concern && peer.timestamp !== currentUser.timestamp
+            );
+
+            if (matchedPeers.length === 0) {
+                document.getElementById('peersList').innerHTML = `
+                    <div class="no-matches">
+                        <i class="fas fa-user-friends"></i>
+                        <h3>No matched peers found</h3>
+                        <p>Be the first! Other peers with "${currentUser.concern}" concern will appear here</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Display matched peers
+            const peersHTML = matchedPeers.map(peer => `
+                <div class="peer-card">
+                    <div class="peer-name"><i class="fas fa-user"></i> ${peer.name}</div>
+                    <div class="peer-info">
+                        <span><i class="fas fa-birthday-cake"></i> ${peer.ageGroup}</span>
+                        <span><i class="fas fa-heart"></i> ${peer.concern}</span>
+                        <span><i class="fas fa-comments"></i> ${peer.communication}</span>
+                        <span><i class="fas fa-clock"></i> ${peer.availability}</span>
+                    </div>
+                    <button class="connect-btn" onclick="connectWithPeer('${peer.name}')">
+                        <i class="fas fa-paper-plane"></i> Connect
+                    </button>
+                </div>
+            `).join('');
+
+            document.getElementById('peersList').innerHTML = peersHTML;
+        }
+
+        // Connect with peer
+        function connectWithPeer(peerName) {
+            showMessage(`Connecting with ${peerName}... (Chat feature coming soon!)`);
+        }
+
+        // Show message toast
+        function showMessage(text) {
+            const messageEl = document.getElementById('message');
+            const messageText = document.getElementById('messageText');
+            messageText.textContent = text;
+            messageEl.classList.add('show');
+            
+            setTimeout(() => {
+                messageEl.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+

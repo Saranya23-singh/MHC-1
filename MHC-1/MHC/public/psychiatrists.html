@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psychiatrist Consultation - Tranquoria</title>
+    <link rel="stylesheet" href="psychiatrists.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating gradient orbs -->
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+
+    <a href="dashboard.html" class="home-btn"><i class="fas fa-home"></i> Home</a>
+
+    <div class="psych-container">
+        <div class="header-section">
+            <div class="header-icon"><i class="fas fa-user-md"></i></div>
+            <h1>Psychiatrist Consultation</h1>
+            <p>Connect with certified mental health professionals</p>
+        </div>
+
+        <!-- Psychiatrists Grid -->
+        <div class="psych-grid" id="psychGrid"></div>
+
+        <!-- My Bookings Section -->
+        <div class="my-bookings">
+            <h2><i class="fas fa-calendar-check"></i> My Bookings</h2>
+            <div id="bookingsList" class="bookings-list">
+                <div class="no-bookings">
+                    <i class="fas fa-calendar-plus"></i>
+                    <p>No bookings yet. Book a session with a psychiatrist above.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div class="modal-overlay" id="bookingModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-calendar-plus"></i> Book Session</h2>
+                <button class="close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <div id="message" class="message">
+        <i class="fas fa-check-circle"></i> <span id="messageText">Booking confirmed!</span>
+    </div>
+
+    <script>
+        const psychiatrists = [
+            { id: 1, name: "Dr. Ananya Sharma", specialization: "Anxiety & Trauma", experience: 12, fee: 1200, slots: ["09:00 AM", "10:00 AM", "02:00 PM", "04:00 PM"] },
+            { id: 2, name: "Dr. Rahul Verma", specialization: "Depression & Stress", experience: 15, fee: 1500, slots: ["11:00 AM", "12:00 PM", "03:00 PM", "05:00 PM"] },
+            { id: 3, name: "Dr. Priya Singh", specialization: "Adolescent Mental Health", experience: 8, fee: 1000, slots: ["09:30 AM", "11:30 AM", "02:30 PM", "04:30 PM"] },
+            { id: 4, name: "Dr. Amit Kumar", specialization: "PTSD & Trauma", experience: 20, fee: 1800, slots: ["10:00 AM", "01:00 PM", "03:00 PM", "06:00 PM"] },
+            { id: 5, name: "Dr. Sarah Johnson", specialization: "Anxiety & Panic Disorders", experience: 10, fee: 1300, slots: ["08:00 AM", "12:00 PM", "04:00 PM", "05:00 PM"] },
+            { id: 6, name: "Dr. Michael Chen", specialization: "Work Stress & Burnout", experience: 14, fee: 1400, slots: ["09:00 AM", "11:00 AM", "02:00 PM", "05:00 PM"] }
+        ];
+
+        let selectedPsychId = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderPsychiatrists();
+            loadBookings();
+        });
+
+        function getBookedSlots() {
+            return JSON.parse(localStorage.getItem('bookedSlots')) || {};
+        }
+
+        function getBookings() {
+            return JSON.parse(localStorage.getItem('psychBookings')) || [];
+        }
+
+        function renderPsychiatrists() {
+            const grid = document.getElementById('psychGrid');
+            const bookedSlots = getBookedSlots();
+            
+            grid.innerHTML = psychiatrists.map(psych => {
+                const bookedForPsych = bookedSlots[psych.id] || [];
+                return `
+                <div class="psych-card">
+                    <div class="psych-header">
+                        <div class="psych-avatar"><i class="fas fa-user"></i></div>
+                        <div>
+                            <div class="psych-name">${psych.name}</div>
+                            <div class="psych-title">Certified Psychiatrist</div>
+                        </div>
+                    </div>
+                    <div class="psych-details">
+                        <div class="psych-detail"><i class="fas fa-stethoscope"></i><span>${psych.specialization}</span></div>
+                        <div class="psych-detail"><i class="fas fa-briefcase"></i><span>${psych.experience} years experience</span></div>
+                    </div>
+                    <div class="psych-fee">
+                        <div class="label">Session Fee</div>
+                        <div class="amount">₹${psych.fee}</div>
+                    </div>
+                    <div class="slots-available">
+                        <div class="slots-title">Available Time Slots</div>
+                        <div class="slots-list">
+                            ${psych.slots.map(slot => {
+                                const isBooked = bookedForPsych.includes(slot);
+                                return `<span class="slot ${isBooked ? 'booked' : ''}" data-psych="${psych.id}" data-slot="${slot}">${slot}</span>`;
+                            }).join('')}
+                        </div>
+                    </div>
+                    <button class="book-btn" onclick="openBookingModal(${psych.id})"><i class="fas fa-calendar-plus"></i> Book Session</button>
+                </div>`;
+            }).join('');
+
+            document.querySelectorAll('.slot:not(.booked)').forEach(slot => {
+                slot.addEventListener('click', function() {
+                    openBookingModal(parseInt(this.dataset.psych), this.dataset.slot);
+                });
+            });
+        }
+
+        function openBookingModal(psychId, preSelectedSlot = null) {
+            selectedPsychId = psychId;
+            const psych = psychiatrists.find(p => p.id === psychId);
+            const bookedSlots = getBookedSlots()[psychId] || [];
+            const availableSlots = psych.slots.filter(slot => !bookedSlots.includes(slot));
+            const today = new Date().toISOString().split('T')[0];
+            
+            let slotsOptions = availableSlots.map(slot => 
+                `<option value="${slot}" ${slot === preSelectedSlot ? 'selected' : ''}>${slot}</option>`
+            ).join('');
+
+            document.getElementById('modalBody').innerHTML = `
+                <p style="margin-bottom:1rem;color:#2F6F57;font-weight:600;">Booking with <strong>${psych.name}</strong></p>
+                ${preSelectedSlot ? `<div class="selected-slot"><i class="fas fa-clock"></i> Selected: ${preSelectedSlot}</div>` : ''}
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Patient Name</label>
+                    <input type="text" id="patientName" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-calendar"></i> Preferred Date</label>
+                    <input type="date" id="bookingDate" min="${today}" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-clock"></i> Time Slot</label>
+                    <select id="timeSlot" required><option value="">Select a time slot</option>${slotsOptions}</select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-heart"></i> Issue Category</label>
+                    <select id="issueCategory" required>
+                        <option value="">Select your concern</option>
+                        <option value="Anxiety">Anxiety</option>
+                        <option value="Depression">Depression</option>
+                        <option value="Stress">Stress</option>
+                        <option value="Trauma">Trauma</option>
+                        <option value="Relationship Issues">Relationship Issues</option>
+                        <option value="Work Pressure">Work Pressure</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+                    <button class="confirm-btn" onclick="confirmBooking()"><i class="fas fa-check"></i> Confirm</button>
+                </div>`;
+            document.getElementById('bookingModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('bookingModal').classList.remove('active');
+            selectedPsychId = null;
+        }
+
+        function confirmBooking() {
+            const patientName = document.getElementById('patientName').value;
+            const bookingDate = document.getElementById('bookingDate').value;
+            const timeSlot = document.getElementById('timeSlot').value;
+            const issueCategory = document.getElementById('issueCategory').value;
+
+            if (!patientName || !bookingDate || !timeSlot || !issueCategory) {
+                showMessage('Please fill all fields');
+                return;
+            }
+
+            const psych = psychiatrists.find(p => p.id === selectedPsychId);
+            const booking = { id: Date.now(), psychId: selectedPsychId, psychName: psych.name, patientName, date: bookingDate, time: timeSlot, issue: issueCategory, fee: psych.fee };
+            
+            const bookings = getBookings();
+            bookings.push(booking);
+            localStorage.setItem('psychBookings', JSON.stringify(bookings));
+
+            const bookedSlots = getBookedSlots();
+            if (!bookedSlots[selectedPsychId]) bookedSlots[selectedPsychId] = [];
+            bookedSlots[selectedPsychId].push(timeSlot);
+            localStorage.setItem('bookedSlots', JSON.stringify(bookedSlots));
+
+            closeModal();
+            renderPsychiatrists();
+            loadBookings();
+            showMessage('Booking confirmed!');
+        }
+
+        function loadBookings() {
+            const bookings = getBookings();
+            const list = document.getElementById('bookingsList');
+            if (bookings.length === 0) {
+                list.innerHTML = '<div class="no-bookings"><i class="fas fa-calendar-plus"></i><p>No bookings yet.</p></div>';
+                return;
+            }
+            list.innerHTML = bookings.map(booking => `
+                <div class="booking-item">
+                    <div class="booking-info">
+                        <h4><i class="fas fa-user-md"></i> ${booking.psychName}</h4>
+                        <p><i class="fas fa-calendar"></i> ${booking.date} at ${booking.time}</p>
+                        <p><i class="fas fa-heart"></i> ${booking.issue}</p>
+                    </div>
+                    <div class="booking-status">Confirmed</div>
+                </div>`).join('');
+        }
+
+        function showMessage(text) {
+            const messageEl = document.getElementById('message');
+            document.getElementById('messageText').textContent = text;
+            messageEl.classList.add('show');
+            setTimeout(() => messageEl.classList.remove('show'), 3000);
+        }
+
+        document.getElementById('bookingModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+    </script>
+</body>
+</html>
+
