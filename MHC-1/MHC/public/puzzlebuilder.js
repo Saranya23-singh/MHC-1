@@ -1,8 +1,6 @@
 // Puzzle Builder Game - Drag and Drop Shapes
 
-document.addEventListener("DOMContentLoaded", function() {
-    console.log("Puzzle Builder game initializing...");
-});
+
 
 const puzzleShapes = [
     // Square
@@ -27,7 +25,7 @@ function initPuzzleBuilder() {
 function renderShapes() {
     const container = document.getElementById('shapesContainer');
     container.innerHTML = '';
-    
+
     // Create shapes
     puzzleShapes.forEach((shape, index) => {
         const shapeDiv = document.createElement('div');
@@ -38,23 +36,23 @@ function renderShapes() {
         shapeDiv.style.height = shape.height + 'px';
         shapeDiv.style.cursor = 'grab';
         shapeDiv.innerHTML = `<svg width="${shape.width}" height="${shape.height}" viewBox="0 0 ${shape.width} ${shape.height}">${shape.svg}</svg>`;
-        
+
         // Mouse drag events
         shapeDiv.addEventListener('mousedown', handleDragStart);
-        
+
         // Touch drag events
         shapeDiv.addEventListener('touchstart', handleTouchStart, { passive: false });
-        
+
         container.appendChild(shapeDiv);
     });
-    
+
     console.log("Shapes rendered:", puzzleShapes.length);
 }
 
 function renderBoard() {
     const board = document.getElementById('puzzleBoard');
     board.innerHTML = '';
-    
+
     // Create a simple 2x2 grid drop zone
     const zone = document.createElement('div');
     zone.className = 'drop-zone';
@@ -62,13 +60,13 @@ function renderBoard() {
     zone.style.height = '200px';
     zone.style.left = '25px';
     zone.style.top = '25px';
-    
+
     zone.addEventListener('dragover', handleDragOver);
     zone.addEventListener('dragleave', handleDragLeave);
     zone.addEventListener('drop', handleDrop);
-    
+
     board.appendChild(zone);
-    
+
     // Re-render placed shapes
     updatePlacedShapesDisplay();
 }
@@ -76,10 +74,10 @@ function renderBoard() {
 function updatePlacedShapesDisplay() {
     const board = document.getElementById('puzzleBoard');
     const zone = board.querySelector('.drop-zone');
-    
+
     // Clear existing shapes in zone
     zone.innerHTML = '';
-    
+
     placedShapes.forEach(placed => {
         const shapeSvg = document.createElement('div');
         shapeSvg.style.position = 'absolute';
@@ -92,7 +90,7 @@ function updatePlacedShapesDisplay() {
         zone.appendChild(shapeSvg);
         zone.classList.add('filled');
     });
-    
+
     checkPuzzleComplete();
 }
 
@@ -106,62 +104,62 @@ function handleDragStart(e) {
     e.preventDefault();
     draggedElement = e.currentTarget;
     draggedShapeData = puzzleShapes[e.currentTarget.dataset.index];
-    
+
     const rect = draggedElement.getBoundingClientRect();
     offsetX = e.clientX - rect.left;
     offsetY = e.clientY - rect.top;
-    
+
     draggedElement.style.position = 'fixed';
     draggedElement.style.zIndex = '1000';
     draggedElement.style.opacity = '0.8';
-    
+
     document.addEventListener('mousemove', handleDragMove);
     document.addEventListener('mouseup', handleDragEnd);
-    
+
     console.log("Drag started:", draggedShapeData.id);
 }
 
 function handleDragMove(e) {
     if (!draggedElement) return;
-    
+
     draggedElement.style.left = (e.clientX - offsetX) + 'px';
     draggedElement.style.top = (e.clientY - offsetY) + 'px';
 }
 
 function handleDragEnd(e) {
     if (!draggedElement) return;
-    
+
     document.removeEventListener('mousemove', handleDragMove);
     document.removeEventListener('mouseup', handleDragEnd);
-    
+
     // Check if dropped on board
     const board = document.getElementById('puzzleBoard');
     const boardRect = board.getBoundingClientRect();
     const elementRect = draggedElement.getBoundingClientRect();
-    
+
     const elementCenterX = elementRect.left + elementRect.width / 2;
     const elementCenterY = elementRect.top + elementRect.height / 2;
-    
+
     if (elementCenterX >= boardRect.left && elementCenterX <= boardRect.right &&
         elementCenterY >= boardRect.top && elementCenterY <= boardRect.bottom) {
-        
+
         // Add to placed shapes
         placedShapes.push({ shape: draggedShapeData });
         draggedElement.style.display = 'none';
-        
+
         console.log("Shape placed:", draggedShapeData.id);
     }
-    
+
     // Reset element
     draggedElement.style.position = '';
     draggedElement.style.zIndex = '';
     draggedElement.style.opacity = '';
     draggedElement.style.left = '';
     draggedElement.style.top = '';
-    
+
     draggedElement = null;
     draggedShapeData = null;
-    
+
     renderBoard();
 }
 
@@ -170,26 +168,26 @@ function handleTouchStart(e) {
     e.preventDefault();
     draggedElement = e.currentTarget;
     draggedShapeData = puzzleShapes[e.currentTarget.dataset.index];
-    
+
     const touch = e.touches[0];
     const rect = draggedElement.getBoundingClientRect();
     offsetX = touch.clientX - rect.left;
     offsetY = touch.clientY - rect.top;
-    
+
     draggedElement.style.position = 'fixed';
     draggedElement.style.zIndex = '1000';
     draggedElement.style.opacity = '0.8';
-    
+
     document.addEventListener('touchmove', handleTouchMove, { passive: false });
     document.addEventListener('touchend', handleTouchEnd);
-    
+
     console.log("Touch drag started:", draggedShapeData.id);
 }
 
 function handleTouchMove(e) {
     e.preventDefault();
     if (!draggedElement) return;
-    
+
     const touch = e.touches[0];
     draggedElement.style.left = (touch.clientX - offsetX) + 'px';
     draggedElement.style.top = (touch.clientY - offsetY) + 'px';
@@ -197,36 +195,36 @@ function handleTouchMove(e) {
 
 function handleTouchEnd(e) {
     if (!draggedElement) return;
-    
+
     document.removeEventListener('touchmove', handleTouchMove);
     document.removeEventListener('touchend', handleTouchEnd);
-    
+
     // Check if dropped on board
     const board = document.getElementById('puzzleBoard');
     const boardRect = board.getBoundingClientRect();
     const elementRect = draggedElement.getBoundingClientRect();
-    
+
     const elementCenterX = elementRect.left + elementRect.width / 2;
     const elementCenterY = elementRect.top + elementRect.height / 2;
-    
+
     if (elementCenterX >= boardRect.left && elementCenterX <= boardRect.right &&
         elementCenterY >= boardRect.top && elementCenterY <= boardRect.bottom) {
-        
+
         placedShapes.push({ shape: draggedShapeData });
         draggedElement.style.display = 'none';
-        
+
         console.log("Shape placed via touch:", draggedShapeData.id);
     }
-    
+
     draggedElement.style.position = '';
     draggedElement.style.zIndex = '';
     draggedElement.style.opacity = '';
     draggedElement.style.left = '';
     draggedElement.style.top = '';
-    
+
     draggedElement = null;
     draggedShapeData = null;
-    
+
     renderBoard();
 }
 
@@ -243,7 +241,7 @@ function handleDragLeave(e) {
 function handleDrop(e) {
     e.preventDefault();
     e.currentTarget.classList.remove('drag-over');
-    
+
     if (draggedShapeData) {
         placedShapes.push({ shape: draggedShapeData });
         draggedElement.style.display = 'none';
@@ -253,24 +251,28 @@ function handleDrop(e) {
 
 function checkPuzzleComplete() {
     const complete = document.getElementById('puzzleComplete');
-    
+
     if (placedShapes.length >= 2) {
         complete.style.display = 'block';
     } else {
         complete.style.display = 'none';
     }
-    
+
     console.log("Placed shapes:", placedShapes.length);
 }
 
 function resetPuzzle() {
     placedShapes = [];
-    
+
     // Show all shapes again
     const shapes = document.querySelectorAll('.shapes-container .shape');
     shapes.forEach(s => s.style.display = 'block');
-    
+
     renderBoard();
     console.log("Puzzle reset");
 }
+
+// Fixed: expose to window for games controller integration
+window.initPuzzleBuilder = initPuzzleBuilder;
+window.resetPuzzle = resetPuzzle;
 

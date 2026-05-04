@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Tranquoria</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating gradient orbs -->
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="logo">
+            <i class="fas fa-spa"></i>
+            <span>Tranquoria</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="active"><a href="/"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="journal.html"><i class="fas fa-book-open"></i> Journal</a></li>
+            <li><a href="BE.html"><i class="fas fa-wind"></i> Breathing</a></li>
+            <li><a href="med.html"><i class="fas fa-praying-hands"></i> Meditation</a></li>
+            <li><a href="AIbot.html"><i class="fas fa-robot"></i> AI Companion</a></li>
+            <li><a href="sleeptracker.html"><i class="fas fa-moon"></i> Sleep</a></li>
+            <li><a href="heartRate.html"><i class="fas fa-heartbeat"></i> Heart Rate</a></li>
+            <li><a href="peer-support.html"><i class="fas fa-users"></i> Peer Support</a></li>
+            <li><a href="psychiatrists.html"><i class="fas fa-user-md"></i> Psychiatrist</a></li>
+            <li><a href="games.html"><i class="fas fa-gamepad"></i> Games</a></li>
+            <li><a href="assessment.html"><i class="fas fa-clipboard-check"></i> Assessment</a></li>
+        </ul>
+        <div class="nav-footer">
+            <a href="login.html" class="logout-btn" onclick="logout()">\n                <i class="fas fa-sign-out-alt"></i> Logout\n            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="greeting">
+                <h1>Hello, <span id="userName">Friend</span> 🌿</h1>
+                <p>Today's date: <span id="currentDate"></span></p>
+            </div>
+        </header>
+
+        <!-- Mood Tracker Section -->
+        <section class="mood-section">
+            <h2><i class="fas fa-heart"></i> Today's Mood</h2>
+            <div class="mood-tracker">
+                <button class="mood-btn" data-mood="happy">
+                    <span class="mood-emoji">🙂</span>
+                    <span class="mood-label">Happy</span>
+                </button>
+                <button class="mood-btn" data-mood="neutral">
+                    <span class="mood-emoji">😐</span>
+                    <span class="mood-label">Neutral</span>
+                </button>
+                <button class="mood-btn" data-mood="sad">
+                    <span class="mood-emoji">😔</span>
+                    <span class="mood-label">Sad</span>
+                </button>
+                <button class="mood-btn" data-mood="anxious">
+                    <span class="mood-emoji">😰</span>
+                    <span class="mood-label">Anxious</span>
+                </button>
+                <button class="mood-btn" data-mood="calm">
+                    <span class="mood-emoji">😌</span>
+                    <span class="mood-label">Calm</span>
+                </button>
+            </div>
+            <div class="mood-suggestion" id="moodSuggestion"></div>
+        </section>
+
+        <!-- Wellness Score & Streak -->
+        <div class="stats-row">
+            <div class="stat-card wellness-card">
+                <div class="stat-icon">
+                    <i class="fas fa-heart-pulse"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Wellness Score</h3>
+                    <div class="score-display">
+                        <div class="score-circle">
+                            <svg viewBox="0 0 100 100">
+                                <circle class="score-bg" cx="50" cy="50" r="45"/>
+                                <circle class="score-progress" cx="50" cy="50" r="45" id="scoreCircle"/>
+                            </svg>
+                            <span class="score-value" id="wellnessScore">85%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card streak-card">
+                <div class="stat-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Mindfulness Streak</h3>
+                    <p class="streak-count"><span id="streakDays">7</span> Days 🔥</p>
+                    <p class="streak-message" id="streakMessage">Amazing consistency!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature Cards -->
+        <section class="features-grid">
+            <h2><i class="fas fa-sparkles"></i> Your Wellness Tools</h2>
+            <div class="features-container">
+                <a href="BE.html" class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-wind"></i>
+                    </div>
+                    <h3>Breathing Session</h3>
+                    <p>4-7-8 breathing exercise</p>
+                </a>
+                <a href="journal.html" class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-pen-fancy"></i>
+                    </div>
+                    <h3>Write Journal</h3>
+                    <p>Express your thoughts</p>
+                </a>
+                <a href="AIbot.html" class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI Companion</h3>
+                    <p>Chat for support</p>
+                </a>
+                <a href="sleeptracker.html" class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <h3>Sleep Tracker</h3>
+                    <p>Monitor your sleep</p>
+                </a>
+                <a href="heartRate.html" class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3>Heart Rate</h3>
+                    <p>Track your pulse</p>
+                </a>
+                <a href="peer-support.html" class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Peer Support</h3>
+                    <p>Connect with others</p>
+                </a>
+                <a href="assessment.html" class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <h3>Assessment</h3>
+                    <p>Check your wellbeing</p>
+                </a>
+                <a href="games.html" class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h3>Games</h3>
+                    <p>Relax your mind</p>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <script src="navigation.js"></script>
+    <script>
+        // Simple date display (no calendar button)
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', options);
+            
+            // Simple logout
+            document.querySelector('.logout-btn').onclick = function(e) {
+                e.preventDefault();
+                goToLanding();
+            };
+        });
+    </script>
+    <script src="dashboard.js"></script>
+    <script src="sounds.js"></script>
+</body>
+</html>

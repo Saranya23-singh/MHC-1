@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - SootheSpace</title>
+<title>Sign Up - Tranquoria</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -302,8 +302,8 @@
 
     <script>
         // Check if user is already logged in
-        if (localStorage.getItem('soothespace_user')) {
-            window.location.href = 'dashboard.html';
+        if (localStorage.getItem('isLoggedIn')) {
+            window.location.href = 'companion.html';
         }
 
         document.getElementById('signupForm').addEventListener('submit', function(e) {
@@ -329,7 +329,7 @@
             }
             
             // Get stored users
-            const users = JSON.parse(localStorage.getItem('soothespace_users') || '[]');
+            const users = JSON.parse(localStorage.getItem('tranquoria_users') || '[]');
             
             // Check if email already exists
             if (users.find(u => u.email === email)) {
@@ -353,10 +353,11 @@
             
             // Save user
             users.push(newUser);
-            localStorage.setItem('soothespace_users', JSON.stringify(users));
+            localStorage.setItem('tranquoria_users', JSON.stringify(users));
             
             // Auto login
-            localStorage.setItem('soothespace_user', JSON.stringify(newUser));
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('tranquoria_user', JSON.stringify(newUser));
             
             // Show success and redirect
             successMsg.textContent = 'Account created successfully! Redirecting...';

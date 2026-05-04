@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api/chat";
+const API_URL = "/api/chat"; // ✅ FIXED (use your Node server)
 
 document.getElementById("user-input").addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
@@ -12,22 +12,19 @@ async function sendMessage() {
   const chatBox = document.getElementById("chat-box");
 
   const message = userInput.value.trim();
-  
+
   if (!message && imageInput.files.length === 0) return;
 
-  // Add user message bubble
+  // Add user message
   addMessageBubble("user", message, null);
   userInput.value = "";
-  
-  // Show typing indicator
+
   const typingId = showTypingIndicator();
-  
-  // Check if an image file was selected
+
   let imageData = null;
   if (imageInput.files.length > 0) {
     const file = imageInput.files[0];
     imageData = await readFileAsDataURL(file);
-    // Display the image in the chat
     addMessageBubble("user", "", imageData);
     imageInput.value = "";
   }
@@ -39,38 +36,32 @@ async function sendMessage() {
       body: JSON.stringify({ message, image: imageData }),
     });
 
-    // Remove typing indicator
     removeTypingIndicator(typingId);
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log("✅ API Response:", data);
 
-    // Format and display bot response with typing effect
-    const formattedReply = formatResponse(data.reply || "I couldn't understand that.");
+    console.log("✅ API RESPONSE:", data);
+
+    // ✅ FIXED: use correct key
+    const botReply = data.reply;
+
+    const formattedReply = formatResponse(
+      botReply || "I'm here for you 💚"
+    );
+
     typeMessage("bot", formattedReply);
-    
+
   } catch (error) {
-    // Remove typing indicator
     removeTypingIndicator(typingId);
-    
-    console.error("❌ Error communicating with AI:", error);
-    
-    // Show user-friendly error message with improved handling
-    let errorMessage = "I'm having trouble responding right now. Please try again.";
-    
-    if (error.message.includes("API key")) {
-      errorMessage = "I'm having trouble responding right now. Please try again.";
-    } else if (error.message.includes("500") || error.message.includes("Failed") || error.message.includes("fetch")) {
-      errorMessage = "I'm having trouble responding right now. Please try again.";
-    }
-    
-    // Add error message with special styling
-    addMessageBubble("bot", errorMessage, null, true);
+
+    console.error("❌ Error:", error);
+
+    // ❗ Only show error if API actually failed
+    addMessageBubble("bot", "Something went wrong. Please try again.", null, true);
   }
 }
 
@@ -79,6 +70,7 @@ function showTypingIndicator() {
   const typingDiv = document.createElement("div");
   typingDiv.className = "typing-indicator";
   typingDiv.id = "typing-" + Date.now();
+
   typingDiv.innerHTML = `
     <div class="typing-dots">
       <span></span>
@@ -86,8 +78,10 @@ function showTypingIndicator() {
       <span></span>
     </div>
   `;
+
   chatBox.appendChild(typingDiv);
   chatBox.scrollTop = chatBox.scrollHeight;
+
   return typingDiv.id;
 }
 
@@ -100,48 +94,41 @@ function removeTypingIndicator(typingId) {
 
 function addMessageBubble(sender, text, imageSrc, isError = false) {
   const chatBox = document.getElementById("chat-box");
-  
+
   let content = "";
-  if (text) {
-    content = `<span>${text}</span>`;
-  }
+  if (text) content = `<span>${text}</span>`;
   if (imageSrc) {
-    content += `<img src="${imageSrc}" alt="uploaded image" class="chat-image" />`;
+    content += `<img src="${imageSrc}" class="chat-image" />`;
   }
 
   const messageDiv = document.createElement("div");
   messageDiv.className = `message ${sender} fade-in`;
-  if (isError) {
-    messageDiv.classList.add("error");
-  }
+
+  if (isError) messageDiv.classList.add("error");
+
   messageDiv.innerHTML = content;
 
   chatBox.appendChild(messageDiv);
-  
-  // Smooth scroll to bottom
+
   setTimeout(() => {
     messageDiv.scrollIntoView({ behavior: "smooth", block: "end" });
   }, 100);
 }
 
-// Typing effect for bot messages
 function typeMessage(sender, text) {
   const chatBox = document.getElementById("chat-box");
-  
+
   const messageDiv = document.createElement("div");
   messageDiv.className = `message ${sender} fade-in`;
-  chatBox.appendChild(messageDiv);
-  
-  // Create content element
+
   const contentSpan = document.createElement("span");
   messageDiv.appendChild(contentSpan);
-  
-  chatBox.scrollTop = chatBox.scrollHeight;
-  
-  // Simple typing effect - show text immediately with animation
+
+  chatBox.appendChild(messageDiv);
+
   let index = 0;
-  const speed = 15; // ms per character
-  
+  const speed = 15;
+
   function typeChar() {
     if (index < text.length) {
       contentSpan.innerHTML = text.substring(0, index + 1);
@@ -150,14 +137,13 @@ function typeMessage(sender, text) {
       setTimeout(typeChar, speed);
     }
   }
-  
+
   typeChar();
 }
 
 function formatResponse(text) {
   return text
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\* (.*?)\n/g, "<li>$1</li>")
     .replace(/\n/g, "<br>");
 }
 
@@ -169,4 +155,3 @@ function readFileAsDataURL(file) {
     reader.readAsDataURL(file);
   });
 }
-

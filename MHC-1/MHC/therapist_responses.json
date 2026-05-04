@@ -1,0 +1,32 @@
+{
+    "anxiety": [
+        "I understand you're feeling anxious right now. Take a deep breath with me. 🌿 Let's try a simple grounding exercise: Name 5 things you can see, 4 things you can touch, 3 things you can hear, 2 things you can smell, and 1 thing you can taste. Remember, what you're feeling is temporary. Would you like me to guide you through a breathing exercise?",
+        "Anxiety can feel overwhelming. I'm here with you. Try the 4-7-8 breathing: inhale for 4, hold for 7, exhale for 8. This activates your relaxation response.",
+        "It's normal to feel anxious sometimes. What's one small thing we can focus on right now to help you feel more grounded?"
+    ],
+    "sadness": [
+        "I'm here with you. 💚 It's okay to feel sad - these emotions are part of being human. Sometimes when we're feeling down, it helps to write down what's on your mind, talk to someone you trust, or practice self-compassion. Would you like to try a journaling exercise?",
+        "Sadness is heavy, but you're not alone carrying it. What has helped you feel a little lighter in the past?",
+        "Allow yourself to feel what you feel. Self-compassion is key. What would you say to a friend feeling this way?"
+    ],
+    "stress": [
+        "Sounds overwhelming. One step at a time. What's the smallest thing you can do right now? Break it into tiny pieces.",
+        "Work stress is common. Try progressive muscle relaxation: tense and release each muscle group. Start with your toes.",
+        "You're doing your best. What boundary can you set today to protect your energy?"
+    ],
+    "anger": [
+        "Anger is valid. What triggered this feeling? Let's find a healthy way to release it - maybe deep breathing or a walk?",
+        "Notice where you feel the anger in your body. Breathe into that space. What do you need right now?",
+        "It's okay to feel mad. Journaling your anger can help process it without exploding."
+    ],
+    "loneliness": [
+        "Feeling lonely is tough. You're reaching out now - that's brave. What brings you comfort when you feel this way?",
+        "Connection starts with small steps. Who in your life makes you feel seen? Even a text can help.",
+        "You're worthy of connection. Sometimes volunteering or joining a group helps build community."
+    ],
+    "general": [
+        "Thank you for sharing. 💚 I'm here to listen without judgment. Take your time. What's on your mind?",
+        "I'm glad you reached out. How can I support you today?",
+        "Your feelings are valid. Let's explore what's been going on for you."
+    ]
+}

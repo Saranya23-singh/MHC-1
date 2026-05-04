@@ -1,7 +1,7 @@
 // AI Companion Chat JavaScript
 // Uses backend server which connects to Gemini API
 
-const API_URL = "http://localhost:3000/api/enhanced-chat";
+const API_URL = "http://localhost:5001/chat";
 
 // Initialize chat when page loads
 document.addEventListener("DOMContentLoaded", () => {
@@ -27,7 +27,7 @@ async function sendMessage() {
     if (!userInput || !chatBox) return;
 
     const message = userInput.value.trim();
-    
+
     if (!message) return;
 
     console.log("Sending message:", message);
@@ -35,7 +35,7 @@ async function sendMessage() {
     // Add user message bubble
     addMessageBubble("user", message);
     userInput.value = "";
-    
+
     // Show loading indicator with "typing" animation
     const loadingId = showTypingIndicator();
 
@@ -45,19 +45,19 @@ async function sendMessage() {
         const sleepData = JSON.parse(localStorage.getItem('sleepData') || '[]');
         const heartData = JSON.parse(localStorage.getItem('heartRateData') || '[]');
         const assessment = JSON.parse(localStorage.getItem('lastAssessment') || null);
-        
+
         const userMetrics = {
             avgSleep: sleepData.length > 0 ? (sleepData.reduce((sum, d) => sum + parseFloat(d.duration), 0) / sleepData.length).toFixed(1) : null,
             avgHR: heartData.length > 0 ? Math.round(heartData.reduce((sum, d) => sum + parseInt(d.heartRate), 0) / heartData.length) : null,
             anxiety: assessment?.score || null
         };
-        
+
         const response = await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ 
-                message, 
-                userData: userMetrics 
+            body: JSON.stringify({
+                message,
+                userData: userMetrics
             }),
         });
 
@@ -75,28 +75,25 @@ async function sendMessage() {
         console.log("Response data:", data);
 
         // Display bot response
-        if (data.reply) {
-            const formattedReply = formatResponse(data.reply);
-            addMessageBubble("bot", formattedReply);
-        } else {
-            throw new Error("No reply in response");
-        }
-        
+        const botReply = data.response || "I'm here to listen. Could you tell me a bit more about how you're feeling?";
+        const formattedReply = formatResponse(botReply);
+        addMessageBubble("bot", formattedReply);
+
     } catch (error) {
         // Remove typing indicator
         removeTypingIndicator(loadingId);
-        
+
         console.error("❌ Error communicating with AI:", error);
-        
+
         // Show user-friendly error message
-        addMessageBubble("bot", "I'm having trouble responding right now. Please try again. 🌿");
+        addMessageBubble("bot", "Sorry, I could not process that.");
     }
 }
 
 function showTypingIndicator() {
     const chatBox = document.getElementById("chat-box");
     if (!chatBox) return null;
-    
+
     const typingDiv = document.createElement("div");
     typingDiv.className = "message bot typing-indicator";
     typingDiv.id = "typing-" + Date.now();
@@ -124,13 +121,13 @@ function removeTypingIndicator(typingId) {
 function addMessageBubble(sender, text) {
     const chatBox = document.getElementById("chat-box");
     if (!chatBox) return;
-    
+
     const messageDiv = document.createElement("div");
     messageDiv.className = `message ${sender} fade-in`;
     messageDiv.innerHTML = `<span>${text}</span>`;
 
     chatBox.appendChild(messageDiv);
-    
+
     // Auto-scroll to the bottom
     setTimeout(() => {
         chatBox.scrollTop = chatBox.scrollHeight;

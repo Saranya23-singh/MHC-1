@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRANQUORIA - Mental Wellness</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            green: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const App = () => {
+      const [currentPage, setCurrentPage] = useState('landing');
+      const [showLogin, setShowLogin] = useState(false);
+      const [detectedMood, setDetectedMood] = useState(null);
+      const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+      const navigate = (page) => setCurrentPage(page);
+      const openLogin = () => setShowLogin(true);
+      const closeLogin = () => setShowLogin(false);
+
+      const handleLogin = () => {
+        closeLogin();
+        navigate('camera');
+      };
+
+      const mockCameraDetect = () => {
+        setIsAnalyzing(true);
+        setTimeout(() => {
+          const moods = ['happy', 'sad', 'stressed', 'neutral'];
+          const mood = moods[Math.floor(Math.random() * moods.length)];
+          setDetectedMood(mood);
+          setIsAnalyzing(false);
+        }, 2000);
+      };
+
+      useEffect(() => {
+        if (currentPage === 'camera') mockCameraDetect();
+      }, [currentPage]);
+
+      const handleMoodSelect = (mood) => {
+        setDetectedMood(mood);
+        navigate('chat');
+      };
+
+      const handleSuggestion = (action) => {
+        if (action === 'dashboard') {
+          window.location.href = 'MHC-1/MHC/public/dashboard.html';
+        }
+        console.log(`Launch ${action}`);
+      };
+
+      return (
+        <>
+          {showLogin && (
+            <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+              <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl">
+                <h2 class="text-2xl font-bold text-green-600 mb-6 text-center">Welcome Back</h2>
+                <input class="w-full p-4 border border-green-200 rounded-2xl mb-4 focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Email" />
+                <input class="w-full p-4 border border-green-200 rounded-2xl mb-6 focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Password" type="password" />
+                <button onClick={handleLogin} class="w-full bg-green-500 text-white py-4 px-8 rounded-2xl font-bold hover:bg-green-600 transition-all duration-300 shadow-lg">
+                  Login
+                </button>
+                <button onClick={closeLogin} class="w-full mt-2 text-gray-500 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {currentPage === 'landing' && (
+            <div>
+              {/* Navbar */}
+              <nav class="bg-white shadow-lg fixed w-full z-40">
+                <div class="max-w-6xl mx-auto px-8 py-4 flex justify-between items-center">
+                  <h1 class="text-2xl font-bold bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent">TRANQUORIA</h1>
+                  <div class="space-x-4">
+                    <button onClick={openLogin} class="px-6 py-2 bg-green-500 text-white rounded-xl font-semibold hover:bg-green-600 transition-all shadow-md">Login</button>
+                    <button onClick={openLogin} class="px-6 py-2 bg-white text-green-600 border-2 border-green-500 rounded-xl font-semibold hover:bg-green-500 hover:text-white transition-all shadow-md">Signup</button>
+                  </div>
+                </div>
+              </nav>
+
+              {/* Hero */}
+              <section class="pt-24 pb-32 max-w-6xl mx-auto px-8">
+                <div class="grid md:grid-cols-2 gap-16 items-center">
+                  <div>
+                    <h2 class="text-5xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight">
+                      Your AI&nbsp;<span class="bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent">Mental Wellness</span> Companion
+                    </h2>
+                    <p class="text-xl text-gray-600 mb-8 max-w-lg">
+                      Discover deeper emotional understanding and build healthier mental habits with personalized AI support.
+                    </p>
+                    <button onClick={openLogin} class="px-10 py-5 bg-gradient-to-r from-green-500 to-green-600 text-white text-xl font-bold rounded-3xl shadow-2xl hover:shadow-3xl hover:-translate-y-1 transition-all duration-300">
+                      Start Your Journey
+                    </button>
+                  </div>
+                  <div class="relative">
+                    <img src="../MHC-1/MHC/public/silhouette-yoga-boy-rooftop-while-sunset-he-is-practicing-yoga.jpg" alt="Yoga silhouette" class="w-full h-96 object-cover rounded-3xl shadow-2xl" />
+                  </div>
+                </div>
+              </section>
+
+              {/* Section 1 */}
+              <section class="py-32 bg-gradient-to-b from-white to-green-50">
+                <div class="max-w-6xl mx-auto px-8">
+                  <h3 class="text-4xl font-bold text-center text-gray-800 mb-20">What Tranquoria Does</h3>
+                  <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-3xl shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 text-center">
+                      <div class="text-5xl mb-6">🧠</div>
+                      <h4 class="text-2xl font-bold mb-4 text-gray-800">AI-Powered Emotional Support</h4>
+                      <p class="text-gray-600">Intelligent conversations that truly understand and respond to your emotions.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-3xl shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 text-center">
+                      <div class="text-5xl mb-6">🎥</div>
+                      <h4 class="text-2xl font-bold mb-4 text-gray-800">Smart Mood Detection</h4>
+                      <p class="text-gray-600">Real-time facial recognition to detect your mood instantly.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-3xl shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 text-center">
+                      <div class="text-5xl mb-6">✨</div>
+                      <h4 class="text-2xl font-bold mb-4 text-gray-800">Personalized Wellness Suggestions</h4>
+                      <p class="text-gray-600">Tailored recommendations based on your unique emotional patterns.</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Section 2 */}
+              <section class="py-32 bg-green-50">
+                <div class="max-w-6xl mx-auto px-8">
+                  <h3 class="text-4xl font-bold text-center text-gray-800 mb-20">How It Helps You</h3>
+                  <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-3xl shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
+                      <h4 class="text-2xl font-bold mb-6 text-gray-800">Talk Freely and Safely</h4>
+                      <p class="text-gray-600 leading-relaxed">Express your thoughts without judgment. Our AI companion listens with empathy and understanding.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-3xl shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
+                      <h4 class="text-2xl font-bold mb-6 text-gray-800">Understand Your Emotions</h4>
+                      <p class="text-gray-600 leading-relaxed">Get insights into your emotional patterns and learn what triggers your moods.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-3xl shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
+                      <h4 class="text-2xl font-bold mb-6 text-gray-800">Improve Daily Habits</h4>
+                      <p class="text-gray-600 leading-relaxed">Build sustainable mental wellness practices through gentle, consistent guidance.</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Section 3 */}
+              <section class="py-32 bg-gradient-to-b from-green-50 to-white">
+                <div class="max-w-6xl mx-auto px-8">
+                  <h3 class="text-4xl font-bold text-center text-gray-800 mb-20">Why Choose Tranquoria</h3>
+                  <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-3xl shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 text-center">
+                      <div class="text-5xl mb-6">🔒</div>
+                      <h4 class="text-2xl font-bold mb-4 text-gray-800">Private and Secure</h4>
+                      <p class="text-gray-600">Your conversations stay private. No data collection without consent.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-3xl shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 text-center">
+                      <div class="text-5xl mb-6">⏰</div>
+                      <h4 class="text-2xl font-bold mb-4 text-gray-800">Always Available</h4>
+                      <p class="text-gray-600">24/7 support whenever you need emotional guidance or a friendly conversation.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-3xl shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 text-center">
+                      <div class="text-5xl mb-6">❤️</div>
+                      <h4 class="text-2xl font-bold mb-4 text-gray-800">Personalized for You</h4>
+                      <p class="text-gray-600">Your companion learns from your interactions to provide increasingly relevant support.</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          )}
+
+          {currentPage === 'camera' && (
+            <div class="min-h-screen bg-gradient-to-br from-green-100 to-green-200 p-8 flex items-center justify-center">
+              <div class="bg-white rounded-3xl p-12 max-w-2xl w-full shadow-2xl text-center">
+                <h1 class="text-3xl font-bold text-green-600 mb-8">Mood Detection</h1>
+                <div class="w-64 h-64 bg-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-8 animate-pulse shadow-lg">
+                  {isAnalyzing ? (
+                    <div>
+                      <div class="text-6xl mb-4">🎥</div>
+                      <p class="text-lg font-semibold">Analyzing your mood...</p>
+                    </div>
+                  ) : (
+                    <div>
+                      <div class="text-6xl mb-4">😊</div>
+                      <p class="text-2xl font-bold text-green-600">Detected: Happy 😊</p>
+                    </div>
+                  )}
+                </div>
+                <div class="space-y-4 mb-12">
+                  <button 
+                    class="w-full bg-green-500 text-white py-4 px-8 rounded-2xl font-bold hover:bg-green-600 transition-all shadow-lg"
+                    onClick={() => handleMoodSelect('happy')}
+                    disabled={isAnalyzing}
+                  >
+                    Continue with this mood
+                  </button>
+                </div>
+                <p class="text-green-600 mb-8">Or select manually:</p>
+                <div class="grid grid-cols-2 gap-4">
+                  {['happy', 'sad', 'stressed', 'neutral'].map(mood => (
+                    <button 
+                      key={mood}
+                      class="p-6 bg-white rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all border hover:border-green-300 flex flex-col items-center"
+                      onClick={() => handleMoodSelect(mood)}
+                    >
+                      <span class="text-4xl mb-2">😊</span>
+                      <span class="font-bold capitalize">{mood}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {currentPage === 'chat' && (
+            <div class="min-h-screen bg-gradient-to-br from-green-50 to-green-100 p-6">
+              <header class="flex items-center justify-between mb-8 p-6 bg-white rounded-3xl shadow-lg">
+                <button onClick={() => navigate('camera')} class="text-2xl text-green-600">←</button>
+                <h1 class="text-2xl font-bold text-green-600">AI Companion</h1>
+              </header>
+              <div class="flex-1 max-w-2xl mx-auto">
+                <div class="bg-white rounded-3xl p-6 shadow-xl h-96 mb-8 overflow-y-auto space-y-4">
+                  <div class="flex">
+                    <div class="bg-green-100 p-4 rounded-2xl rounded-r-none max-w-xs ml-4">
+                      Hey, I'm here with you 💛 How are you feeling today?
+                    </div>
+                  </div>
+                  <div class="flex justify-end">
+                    <div class="bg-green-500 text-white p-4 rounded-2xl rounded-l-none max-w-xs">
+                      I'm feeling {detectedMood}
+                    </div>
+                  </div>
+                  <div class="flex">
+                    <div class="bg-green-100 p-4 rounded-2xl rounded-r-none max-w-xs ml-4">
+                      {BOT_REPLIES[detectedMood || 'neutral'] || 'Great, let me suggest some support!'}
+                    </div>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 p-6 bg-white rounded-3xl shadow-lg">
+                  <button onClick={() => handleSuggestion('breathing')} class="p-6 rounded-2xl bg-green-50 hover:bg-green-100 transition-all shadow-md hover:shadow-lg hover:-translate-y-1">
+                    <span class="text-2xl block mb-2">🧘</span>
+                    <span class="font-bold text-green-700">Breathing Exercise</span>
+                  </button>
+                  <button onClick={() => handleSuggestion('journal')} class="p-6 rounded-2xl bg-green-50 hover:bg-green-100 transition-all shadow-md hover:shadow-lg hover:-translate-y-1">
+                    <span class="text-2xl block mb-2">📝</span>
+                    <span class="font-bold text-green-700">Journaling</span>
+                  </button>
+                  <button onClick={() => handleSuggestion('peer')} class="p-6 rounded-2xl bg-green-50 hover:bg-green-100 transition-all shadow-md hover:shadow-lg hover:-translate-y-1">
+                    <span class="text-2xl block mb-2">🤝</span>
+                    <span class="font-bold text-green-700">Peer Support</span>
+                  </button>
+                  <button onClick={() => handleSuggestion('dashboard')} class="p-6 rounded-2xl bg-green-50 hover:bg-green-100 transition-all shadow-md hover:shadow-lg hover:-translate-y-1">
+                    <span class="text-2xl block mb-2">📊</span>
+                    <span class="font-bold text-green-700">Dashboard</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      );
+    };
+
+    const BOT_REPLIES = {
+      happy: "That's amazing! Let's keep this positive energy going 🌿",
+      sad: "I'm really glad you shared that. You're not alone 🤍",
+      stressed: "Let's slow things down together. I've got you 💛",
+      neutral: "Let's see how we can make your day even better 🙂"
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
+

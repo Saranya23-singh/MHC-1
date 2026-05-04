@@ -2,6 +2,15 @@ from flask import Flask, request, jsonify
 import joblib
 import numpy as np
 import pandas as pd
+import socket
+
+def find_free_port(start=5000):
+    port = start
+    while True:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            if s.connect_ex(('localhost', port)) != 0:
+                return port
+        port += 1
 
 app = Flask(__name__)
 
@@ -27,4 +36,6 @@ def predict():
     })
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    port = find_free_port(5000)
+    print(f'Starting Flask ML API on port {port}')
+    app.run(host='0.0.0.0', port=port, debug=True)

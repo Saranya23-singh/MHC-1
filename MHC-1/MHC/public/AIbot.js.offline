@@ -1,0 +1,115 @@
+// Offline Dataset AI Chat - CounselChat Semantic Search
+const API_URL = "/chat";
+
+// ... rest of file unchanged but simplified payload
+
+document.addEventListener("DOMContentLoaded", () => {
+    setupEventListeners();
+});
+
+function setupEventListeners() {
+    const userInput = document.getElementById("user-input");
+    if (userInput) {
+        userInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                sendMessage();
+            }
+        });
+    }
+}
+
+async function sendMessage() {
+    const userInput = document.getElementById("user-input");
+    const chatBox = document.getElementById("chat-box");
+
+    if (!userInput || !chatBox) return;
+
+    const message = userInput.value.trim();
+
+    if (!message) return;
+
+    console.log("Sending to dataset:", message);
+
+    addMessageBubble("user", message);
+    userInput.value = "";
+
+    const loadingId = showTypingIndicator();
+
+    try {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message })
+        });
+
+        removeTypingIndicator(loadingId);
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Dataset response:", data);
+
+        const botReply = data.response || data.reply || "I'm listening...";
+        addMessageBubble("bot", formatResponse(botReply));
+
+    } catch (error) {
+        removeTypingIndicator(loadingId);
+        console.error("Dataset error:", error);
+        addMessageBubble("bot", "Dataset service busy. Try again.");
+    }
+}
+
+// [Keep all helper functions: showTypingIndicator, removeTypingIndicator, addMessageBubble, formatResponse unchanged]
+
+function showTypingIndicator() {
+    const chatBox = document.getElementById("chat-box");
+    if (!chatBox) return null;
+
+    const typingDiv = document.createElement("div");
+    typingDiv.className = "message bot typing-indicator";
+    typingDiv.id = "typing-" + Date.now();
+    typingDiv.innerHTML = `
+        <div class="typing-content">
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-text">Therapist AI typing...</span>
+        </div>
+    `;
+    chatBox.appendChild(typingDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    return typingDiv.id;
+}
+
+function removeTypingIndicator(typingId) {
+    if (!typingId) return;
+    const typingElement = document.getElementById(typingId);
+    if (typingElement) {
+        typingElement.remove();
+    }
+}
+
+function addMessageBubble(sender, text) {
+    const chatBox = document.getElementById("chat-box");
+    if (!chatBox) return;
+
+    const messageDiv = document.createElement("div");
+    messageDiv.className = `message ${sender} fade-in`;
+    messageDiv.innerHTML = `<span>${text}</span>`;
+
+    chatBox.appendChild(messageDiv);
+    setTimeout(() => {
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }, 100);
+}
+
+function formatResponse(text) {
+    return text
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\n/g, "<br>");
+}
+
+window.sendMessage = sendMessage;
+
