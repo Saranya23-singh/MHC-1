@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Check - Tranquoria</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar (same as dashboard) -->
+    <nav class="sidebar">
+        <div class="logo">
+            <i class="fas fa-spa"></i>
+            <span>Tranquoria</span>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="dashboard.html" onclick="goToDashboard()"><i class="fas fa-home"></i> Dashboard</a></li>
+            <!-- Minimal nav for mood page -->
+        </ul>
+        <div class="nav-footer">
+            <a href="login.html" class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="dashboard-header">
+            <div class="greeting">
+                <h1>Mood Check <span>🌿</span></h1>
+                <p>Let's see how you're feeling today</p>
+            </div>
+        </header>
+
+        <section id="mood-container" class="mood-section">
+            <!-- MoodScreen.js will render here -->
+        </section>
+
+        <section id="suggestion-container" class="mood-section" style="display:none;">
+            <!-- SuggestionCards.js will render here -->
+        </section>
+    </main>
+
+    <script src="navigation.js"></script>
+    <script type="module">
+        import { renderMoodScreen } from './MoodScreen.js';
+        import { renderSuggestionCards, attachSuggestionEvents } from './SuggestionCards.js';
+
+        const moodContainer = document.getElementById('mood-container');
+        const suggestionContainer = document.getElementById('suggestion-container');
+
+        // Render mood screen
+        renderMoodScreen(moodContainer, {
+            onContinue: (moodData) => {
+                // Save mood
+                localStorage.setItem('currentMood', JSON.stringify(moodData));
+                // Show suggestions
+                showSuggestions(moodData.mood);
+            },
+            onSkip: () => {
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        function showSuggestions(mood) {
+            moodContainer.style.display = 'none';
+            suggestionContainer.style.display = 'block';
+            suggestionContainer.innerHTML = renderSuggestionCards(mood, {
+                handleBreathing: () => window.location.href = 'BE.html',
+                handleJournal: () => window.location.href = 'journal.html',
+                handlePeerMatch: () => window.location.href = 'peer-support.html',
+                handleDashboard: () => window.location.href = 'dashboard.html'
+            });
+            attachSuggestionEvents(suggestionContainer, {
+                handleBreathing: () => window.location.href = 'BE.html',
+                handleJournal: () => window.location.href = 'journal.html',
+                handlePeerMatch: () => window.location.href = 'peer-support.html',
+                handleDashboard: () => window.location.href = 'dashboard.html'
+            });
+        }
+
+        // Global logout
+        window.logout = () => {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        };
+    </script>
+</body>
+</html>
+

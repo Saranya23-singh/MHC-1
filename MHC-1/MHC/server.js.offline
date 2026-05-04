@@ -1,0 +1,148 @@
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config();
+
+const app = express();
+app.use(cors({ origin: "*" }));
+app.use(express.json());
+
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve the main HTML file
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'Landingpage.html'));
+});
+
+// Dataset-powered /chat endpoint (Python backend proxy)
+app.post("/chat", async (req, res) => {
+    try {
+        const { message, image } = req.body;
+
+        // Forward to Python Flask (localhost:5001)
+        const pyResponse = await fetch('http://localhost:5001/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message, image: image || null })
+        });
+
+        if (!pyResponse.ok) {
+            throw new Error(`Python backend error: ${pyResponse.status}`);
+        }
+
+        const data = await pyResponse.json();
+        res.json({ response: data.response });
+
+    } catch (error) {
+        console.error('Python proxy error:', error);
+        res.status(500).json({ response: 'Dataset service temporarily unavailable. Try again soon.' });
+    }
+});
+
+// Proxy for legacy /api/chat
+app.post("/api/chat", async (req, res) => {
+    try {
+        const { message } = req.body;
+        const pyResponse = await fetch('http://localhost:5001/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message })
+        });
+
+        if (!pyResponse.ok) {
+            throw new Error(`Python backend error: ${pyResponse.status}`);
+        }
+
+        const data = await pyResponse.json();
+        res.json({ reply: data.response });
+
+    } catch (error) {
+        console.error('API chat proxy error:', error);
+        res.status(500).json({ reply: "I'm here to listen. Could you tell me more?" });
+    }
+});
+
+// Proxy for /api/enhanced-chat (strip userData)
+app.post("/api/enhanced-chat", async (req, res) => {
+    try {
+        const { message } = req.body;
+        const pyResponse = await fetch('http://localhost:5001/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message })
+        });
+
+        if (!pyResponse.ok) {
+            throw new Error(`Python backend error: ${pyResponse.status}`);
+        }
+
+        const data = await pyResponse.json();
+        res.json({ reply: data.response });
+
+    } catch (error) {
+        console.error('Enhanced chat proxy error:', error);
+        res.status(500).json({ reply: "Service temporarily unavailable. Please try again." });
+    }
+});
+
+// Dataset Insights API
+app.get("/api/dataset-insights", (req, res) => {
+    res.json({
+        sleep: { count: 400, avgSleep: 6.8, avgHR: 74, avgStress: 4.2 },
+        hrv: { avgHR: 72.5, avgStress: { 'no stress': 0.2, 'interruption': 0.4, 'time pressure': 0.6 } },
+        mental: { categories: ['Anxiety', 'Stress', 'Depression', 'Sleep Issues'], avgSessions: 4.2 }
+    });
+});
+
+// ML Stress Prediction API (existing)
+app.post("/api/predict-stress", async (req, res) => {
+    try {
+        const { avgSleep, avgHR, anxietyScore } = req.body;
+
+        if (!avgSleep || !avgHR || anxietyScore === undefined) {
+            return res.status(400).json({ error: "Missing metrics: avgSleep, avgHR, anxietyScore" });
+        }
+
+        const response = await fetch('http://localhost:5000/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                sleep_duration: parseFloat(avgSleep),
+                quality_sleep: 7,
+                activity_level: 30,
+                heart_rate: parseInt(avgHR),
+                daily_steps: 8000,
+                bmi_category: 1
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`ML service error: ${response.status}`);
+        }
+
+        const aiData = await response.json();
+        res.json(aiData);
+    } catch (error) {
+        console.error('ML Prediction Error:', error);
+        const sleepDeficit = Math.max(0, 8 - parseFloat(req.body.avgSleep || 0)) * 3;
+        const heartExcess = Math.max(0, (parseInt(req.body.avgHR || 0) - 70)) * 0.2;
+        const anxiety = parseInt(req.body.anxietyScore || 0) * 4;
+        const score = Math.round(Math.max(0, Math.min(100, sleepDeficit + heartExcess + anxiety)));
+
+        const risk = score > 60 ? 'High' : score > 30 ? 'Moderate' : 'Low';
+        res.json({ stress_level: score.toString(), risk, confidence: 0.75, factors: 'Fallback calculation' });
+    }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`✅ Offline Dataset Server running on port ${PORT} (proxies to Flask 5001)`);
+});
+

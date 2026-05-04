@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Wellness Check - Tranquoria</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 50%, #e2f0e8 100%);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .card {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 3rem 2rem;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+    }
+    h1 {
+      font-size: 2.2rem;
+      color: #2F6F57;
+      margin-bottom: 0.75rem;
+      font-weight: 700;
+    }
+    p {
+      font-size: 1.25rem;
+      color: #6B7C85;
+      margin-bottom: 2.5rem;
+    }
+    .moods {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .mood {
+      padding: 1.5rem 1rem;
+      border: 3px solid transparent;
+      border-radius: 20px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .mood:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 20px 40px rgba(47,111,87,0.25);
+      border-color: #7BAE7F;
+    }
+    .mood.selected {
+      border-color: #2F6F57;
+      background: linear-gradient(135deg, #e8f5e9, #d0f0d5);
+      box-shadow: 0 15px 35px rgba(47,111,87,0.3);
+    }
+    .emoji { font-size: 3.5rem; }
+    .label { 
+      font-weight: 600; 
+      color: #1F3D2B; 
+      font-size: 1.1rem;
+    }
+    #continue {
+      display: none;
+      background: linear-gradient(135deg, #2F6F57, #3d8b6a);
+      color: white;
+      border: none;
+      padding: 1.2rem 3rem;
+      border-radius: 50px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(47,111,87,0.4);
+      transition: all 0.3s ease;
+    }
+    #continue:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 40px rgba(47,111,87,0.5);
+    }
+    @media (max-width: 480px) {
+      .moods { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+      h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Quick Wellness Check 🌿</h1>
+    <p>How are you feeling today?</p>
+    <div class="moods">
+      <div class="mood" data-mood="happy">
+        <div class="emoji">😊</div>
+        <div class="label">Happy</div>
+      </div>
+      <div class="mood" data-mood="neutral">
+        <div class="emoji">😐</div>
+        <div class="label">Neutral</div>
+      </div>
+      <div class="mood" data-mood="sad">
+        <div class="emoji">😔</div>
+        <div class="label">Sad</div>
+      </div>
+      <div class="mood" data-mood="anxious">
+        <div class="emoji">😰</div>
+        <div class="label">Anxious</div>
+      </div>
+      <div class="mood" data-mood="calm">
+        <div class="emoji">😌</div>
+        <div class="label">Calm</div>
+      </div>
+    </div>
+    <button id="continue">Continue</button>
+  </div>
+  <script>
+    let selected = null;
+    document.querySelectorAll('.mood').forEach(m => {
+      m.onclick = () => {
+        document.querySelectorAll('.mood').forEach(x => x.classList.remove('selected'));
+        m.classList.add('selected');
+        selected = m.dataset.mood;
+        document.getElementById('continue').style.display = 'block';
+      };
+    });
+    document.getElementById('continue').onclick = () => {
+      localStorage.setItem('mood', selected);
+      window.location.href = '/dashboard.html';
+    };
+  </script>
+</body>
+</html>

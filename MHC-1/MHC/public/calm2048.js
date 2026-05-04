@@ -314,3 +314,6 @@ function setupSwipeControls() {
     }, { passive: true });
 }
 
+// Fixed: expose to window for games controller integration
+window.initCalm2048 = initCalm2048;
+

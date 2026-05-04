@@ -1,0 +1,151 @@
+const API_URL = "/chat";
+
+document.getElementById("user-input").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    sendMessage();
+  }
+});
+
+async function sendMessage() {
+  const userInput = document.getElementById("user-input");
+  const imageInput = document.getElementById("image-input");
+  const chatBox = document.getElementById("chat-box");
+
+  const message = userInput.value.trim();
+
+  if (!message && imageInput.files.length === 0) return;
+
+  addMessageBubble("user", message, null);
+  userInput.value = "";
+
+  const typingId = showTypingIndicator();
+
+  let imageData = null;
+  if (imageInput.files.length > 0) {
+    const file = imageInput.files[0];
+    imageData = await readFileAsDataURL(file);
+    addMessageBubble("user", "", imageData);
+    imageInput.value = "";
+  }
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message, image: imageData }),
+    });
+
+    removeTypingIndicator(typingId);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("✅ Dataset Response:", data);
+
+    const formattedReply = formatResponse(data.response || "I'm here to listen.");
+    typeMessage("bot", formattedReply);
+
+  } catch (error) {
+    removeTypingIndicator(typingId);
+
+    console.error("❌ Dataset Error:", error);
+    addMessageBubble("bot", "Sorry, dataset service busy. Try again.", null, true);
+  }
+}
+
+// [All helper functions unchanged from original]
+function showTypingIndicator() {
+  const chatBox = document.getElementById("chat-box");
+  const typingDiv = document.createElement("div");
+  typingDiv.className = "typing-indicator";
+  typingDiv.id = "typing-" + Date.now();
+  typingDiv.innerHTML = `
+    <div class="typing-dots">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  `;
+  chatBox.appendChild(typingDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
+  return typingDiv.id;
+}
+
+function removeTypingIndicator(typingId) {
+  const typingElement = document.getElementById(typingId);
+  if (typingElement) {
+    typingElement.remove();
+  }
+}
+
+function addMessageBubble(sender, text, imageSrc, isError = false) {
+  const chatBox = document.getElementById("chat-box");
+
+  let content = "";
+  if (text) {
+    content = `<span>${text}</span>`;
+  }
+  if (imageSrc) {
+    content += `<img src="${imageSrc}" alt="uploaded image" class="chat-image" />`;
+  }
+
+  const messageDiv = document.createElement("div");
+  messageDiv.className = `message ${sender} fade-in`;
+  if (isError) {
+    messageDiv.classList.add("error");
+  }
+  messageDiv.innerHTML = content;
+
+  chatBox.appendChild(messageDiv);
+
+  setTimeout(() => {
+    messageDiv.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, 100);
+}
+
+function typeMessage(sender, text) {
+  const chatBox = document.getElementById("chat-box");
+
+  const messageDiv = document.createElement("div");
+  messageDiv.className = `message ${sender} fade-in`;
+  chatBox.appendChild(messageDiv);
+
+  const contentSpan = document.createElement("span");
+  messageDiv.appendChild(contentSpan);
+
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  let index = 0;
+  const speed = 15;
+
+  function typeChar() {
+    if (index < text.length) {
+      contentSpan.innerHTML = text.substring(0, index + 1);
+      index++;
+      chatBox.scrollTop = chatBox.scrollHeight;
+      setTimeout(typeChar, speed);
+    }
+  }
+
+  typeChar();
+}
+
+function formatResponse(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\* (.*?)\n/g, "<li>$1</li>")
+    .replace(/\n/g, "<br>");
+}
+
+function readFileAsDataURL(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target.result);
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
+  });
+}
+

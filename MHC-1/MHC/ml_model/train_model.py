@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -7,7 +8,9 @@ from sklearn.metrics import accuracy_score, classification_report
 import joblib
 
 # Load dataset
-df = pd.read_csv('../../datasets/Sleep_health_and_lifestyle_dataset.csv')
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_PATH = os.path.join(BASE_DIR, 'datasets', 'Sleep_health_and_lifestyle_dataset.csv')
+df = pd.read_csv(DATA_PATH)
 
 # Prep features
 df['BMI Category_num'] = df['BMI Category'].map({'Normal Weight': 0, 'Normal': 0, 'Overweight': 1, 'Obese': 2}).fillna(1)

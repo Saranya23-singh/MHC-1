@@ -1,0 +1,71 @@
+import json
+import pandas as pd
+from flask import Flask, request, jsonify
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
+
+app = Flask(__name__)
+
+print("Loading dataset...")
+dataset_path = 'datasets/Mental_Health_dataset/counselchat-data.csv'
+dataset = pd.read_csv(dataset_path)
+print("Dataset loaded:", len(dataset))
+print("Columns:", list(dataset.columns))
+
+# Clean and prepare data
+dataset['questionText'] = dataset['questionText'].fillna('').astype(str).str.lower().str.strip()
+dataset = dataset[dataset['questionText'].str.len() > 0]
+
+print("Preparing TF-IDF...")
+vectorizer = TfidfVectorizer(
+    stop_words='english', 
+    ngram_range=(1,2), 
+    min_df=1, 
+    max_df=0.95
+)
+question_vectors = vectorizer.fit_transform(dataset['questionText'])
+print("TF-IDF vectors shape:", question_vectors.shape)
+
+FALLBACKS = [
+    "I'm really sorry you're feeling this way. Would you like to tell me more about what's going on?",
+    "That sounds difficult. I'm listening if you want to share more.",
+    "I understand this is tough. Take your time."
+]
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    data = request.json
+    user_message = data.get('message', '').lower().strip()
+    
+    if not user_message:
+        return jsonify({'response': "Tell me what's on your mind."})
+    
+    print(f"\n=== NEW QUERY ===")
+    print(f"User query: '{user_message}'")
+    
+    # Transform query
+    query_vec = vectorizer.transform([user_message])
+    similarities = cosine_similarity(query_vec, question_vectors)[0]
+    
+    best_idx = similarities.argmax()
+    best_sim = similarities[best_idx]
+    
+    print(f"Best similarity score: {best_sim:.4f}")
+    
+    if best_sim > 0.1:
+        response = dataset.iloc[best_idx]['answerText']
+        print(f"✅ Using dataset response (sim={best_sim:.4f})")
+    else:
+        response = random.choice(FALLBACKS)
+        print("❌ Using fallback (low similarity)")
+    
+    print(f"Response preview: {response[:100]}...")
+    print("=================\n")
+    
+    return jsonify({'response': response})
+
+if __name__ == '__main__':
+    print("🤖 Tranquoria Therapist AI (Fixed) starting on port 5001...")
+    app.run(host='0.0.0.0', port=5001, debug=True)
+
