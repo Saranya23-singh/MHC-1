@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calming Games - SootheSpace</title>
+<title>Calming Games - Tranquoria</title>
     <link rel="stylesheet" href="games.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -168,74 +168,8 @@
     <script src="grounding.js"></script>
     <script src="puzzlebuilder.js"></script>
     
-    <!-- Main Games Controller -->
-    <script>
-        let isMuted = false;
-
-        function toggleMute() {
-            isMuted = !isMuted;
-            const btn = document.getElementById('muteBtn');
-            const text = document.getElementById('muteText');
-            if (isMuted) {
-                btn.classList.add('muted');
-                btn.innerHTML = '<i class="fas fa-volume-mute"></i> <span>Sound Off</span>';
-            } else {
-                btn.classList.remove('muted');
-                btn.innerHTML = '<i class="fas fa-volume-up"></i> <span>Sound On</span>';
-            }
-        }
-
-        function playPopSound() {
-            if (!isMuted) {
-                const audio = document.getElementById('popSound');
-                audio.volume = 0.3;
-                audio.currentTime = 0;
-                audio.play().catch(() => {});
-            }
-        }
-
-        function startGame(game) {
-            console.log("Starting game:", game);
-            document.getElementById('gamesGrid').style.display = 'none';
-            document.getElementById('mainHeader').style.display = 'none';
-            
-            document.getElementById(game + 'Game').classList.add('active');
-            
-            if (game === 'bubblewrap') {
-                console.log("Initializing Bubble Wrap...");
-                initBubbleWrap();
-            }
-            if (game === 'infinityloop') {
-                console.log("Initializing Infinity Loop...");
-                initInfinityLoop();
-            }
-            if (game === 'calm2048') {
-                console.log("Initializing 2048 Calm...");
-                initCalm2048();
-            }
-            if (game === 'grounding') {
-                console.log("Initializing Grounding...");
-                initGrounding();
-            }
-            if (game === 'puzzlebuilder') {
-                console.log("Initializing Puzzle Builder...");
-                initPuzzleBuilder();
-            }
-        }
-
-        function backToGames() {
-            document.querySelectorAll('.game-area').forEach(area => area.classList.remove('active'));
-            document.getElementById('gamesGrid').style.display = 'grid';
-            document.getElementById('mainHeader').style.display = 'block';
-        }
-
-        // Make generateNewLoop globally accessible
-        window.generateNewLoop = function() {
-            if (typeof initInfinityLoop === 'function') {
-                initInfinityLoop();
-            }
-        };
-    </script>
+    <script src="games.js" defer></script>
 </body>
+
 </html>
 
