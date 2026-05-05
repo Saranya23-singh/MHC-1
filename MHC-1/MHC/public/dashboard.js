@@ -370,4 +370,3 @@ function trackJournalEntry() {
     // Update analytics
     loadWeeklyAnalytics();
 }
-

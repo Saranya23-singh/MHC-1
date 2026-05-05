@@ -1,22 +1,22 @@
 import { renderSuggestionCards, attachSuggestionEvents } from "./SuggestionCards.js";
 
-async function getAIResponse(message) {
+async function sendMessage(message) {
   try {
-    const res = await fetch("/api/chat", {
+    console.log("📡 Sending:", message);
+
+    const response = await fetch("/api/chat", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ message }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message })
     });
 
-    const data = await res.json();
-    console.log("✅ API RESPONSE:", data);
+    const data = await response.json();
+    console.log("✅ Response:", data);
 
-    return data.reply || "I'm here for you 💚";
+    return data.reply || "I'm here for you 💛";
   } catch (err) {
-    console.error("❌ API ERROR:", err);
-    return "I'm here for you 💚";
+    console.error("❌ Error:", err);
+    return "Error connecting to AI";
   }
 }
 
@@ -85,9 +85,8 @@ export function renderChatScreen(
 
   userMessage.textContent = userText ? `${moodLabel} — ${userText}` : moodLabel;
 
-  // 🔥 REAL AI CALL
-  setTimeout(async () => {
-    const aiReply = await getAIResponse(userText);
+  (async () => {
+    const replyText = await sendMessage(userText);
 
     const suggestionsMarkup = renderSuggestionCards(mood, {
       handleBreathing,
@@ -97,9 +96,9 @@ export function renderChatScreen(
     });
 
     typingBubble.innerHTML = `
-      <p>${aiReply}</p>
-      <div class="chat-suggestions">${suggestionsMarkup}</div>
-    `;
+    <p>${replyText}</p>
+    <div class="chat-suggestions">${suggestionsMarkup}</div>
+  `;
 
     typingBubble.classList.remove("typing-bubble");
 
@@ -111,5 +110,4 @@ export function renderChatScreen(
     });
 
     chatWindow.scrollTop = chatWindow.scrollHeight;
-  }, 1200);
-}
+  })();

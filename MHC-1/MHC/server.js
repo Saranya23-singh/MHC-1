@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
+import csv from "csv-parser";
+import fs from "fs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,77 +15,196 @@ const app = express();
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 
-// No-cache middleware
+// -------------------------
+// NO CACHE
+// -------------------------
 app.use((req, res, next) => {
-    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-    res.set('Pragma', 'no-cache');
-    res.set('Expires', '0');
-    next();
+  res.set("Cache-Control", "no-store");
+  next();
 });
 
-// EXPLICIT ROUTE FIRST - overrides static for /
+// -------------------------
+// ROUTE
+// -------------------------
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+  res.sendFile(path.join(__dirname, "public", "login.html"));
 });
 
-// API routes
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "your_new_key_here";
+// -------------------------
+// THERAPIST FALLBACK RESPONSES
+// -------------------------
+const therapistResponses = {
+  anxiety: [
+    "I understand you're feeling anxious. Take a deep breath with me.",
+    "Anxiety can feel overwhelming. Try 4-7-8 breathing.",
+    "It's normal to feel anxious. What can we focus on right now?"
+  ],
+  sadness: [
+    "I'm here with you. It's okay to feel sad.",
+    "Sadness can feel heavy. You're not alone.",
+    "Be kind to yourself. What would you say to a friend?"
+  ],
+  stress: [
+    "That sounds overwhelming. Let's take it one step at a time.",
+    "Try breaking things into smaller tasks.",
+    "You're doing your best. What can you simplify today?"
+  ],
+  anger: [
+    "It's okay to feel angry. What triggered it?",
+    "Take a pause and breathe into the feeling.",
+    "Let's find a healthy way to release that anger."
+  ],
+  loneliness: [
+    "You're not alone. I'm here with you.",
+    "Connection starts small. Maybe reach out to someone.",
+    "You deserve to feel seen and supported."
+  ],
+  general: [
+    "I'm here to listen. Tell me more.",
+    "How can I support you right now?",
+    "Your feelings matter."
+  ]
+};
 
-const SYSTEM_PROMPT = `You are "My Companion", a supportive AI mental wellness assistant for Tranquoria. Your role is to:
-1. Respond empathetically
-2. Help with anxiety/stress/loneliness
-3. Guide breathing/journaling
-4. NEVER diagnose or prescribe
-5. Prioritize emotional well-being`;
+// -------------------------
+// DATA STORAGE
+// -------------------------
+const counselData = [];
 
-app.post("/api/chat", async (req, res) => {
-    try {
-        const { message } = req.body;
-        if (!message) return res.status(400).json({ error: "Message required" });
-        const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`,
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: `${SYSTEM_PROMPT}\nUser: ${message}\nAssistant:` }] }],
-                    generationConfig: { temperature: 0.9, maxOutputTokens: 500 }
-                })
-            }
-        );
-        if (!response.ok) throw new Error('Gemini error');
-        const data = await response.json();
-        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm here for you. 💚";
-        res.json({ reply });
-    } catch (error) {
-        console.error(error);
-        res.json({ reply: "Take a deep breath. 🌿 I'm here to support you." });
+// -------------------------
+// KEYWORDS
+// -------------------------
+const sentimentKeywords = {
+  anxiety: ["anxious", "worry", "panic"],
+  sadness: ["sad", "down", "depressed"],
+  stress: ["stress", "overwhelmed"],
+  anger: ["angry", "mad"],
+  loneliness: ["lonely", "alone"]
+};
+
+// -------------------------
+// HELPERS
+// -------------------------
+function tokenize(text) {
+  return text.toLowerCase().split(/\W+/).filter(t => t.length > 2);
+}
+
+function detectMood(message) {
+  let bestMood = "general";
+  let bestScore = 0;
+
+  for (const [mood, words] of Object.entries(sentimentKeywords)) {
+    let score = 0;
+    for (const w of words) {
+      if (message.toLowerCase().includes(w)) score++;
     }
-});
-
-app.get("/api/dataset-insights", (req, res) => {
-    res.json({
-        sleep: { avgSleep: 6.8, avgHR: 74 },
-        mental: { avgSessions: 4.2 }
-    });
-});
-
-app.post("/api/predict-stress", async (req, res) => {
-    try {
-        const { avgSleep, avgHR } = req.body;
-        const score = Math.round(Math.max(0, Math.min(100, (8 - parseFloat(avgSleep || 0)) * 10 + (parseInt(avgHR || 70) - 70) * 0.5)));
-        res.json({ stress_level: score.toString(), risk: score > 60 ? 'High' : 'Low', confidence: 0.75 });
-    } catch (error) {
-        res.json({ stress_level: '50', risk: 'Moderate', confidence: 0.75 });
+    if (score > bestScore) {
+      bestScore = score;
+      bestMood = mood;
     }
+  }
+
+  return bestMood;
+}
+
+// 🔥 IMPORTANT: SHORT REPLY FORMATTER
+function formatReply(text) {
+  if (!text) return "";
+
+  let clean = text.trim();
+
+  // remove "Hi Name,"
+  clean = clean.replace(/^hi\s+\w+,?\s*/i, "");
+
+  let sentences = clean.split(/(?<=[.!?])\s+/);
+
+  let short = sentences.slice(0, 2).join(" ");
+
+  if (short.length > 180) {
+    short = short.substring(0, 180) + "...";
+  }
+
+  return short;
+}
+
+// -------------------------
+// LOAD DATASET (FIXED PATH)
+// -------------------------
+function loadData() {
+  return new Promise((resolve, reject) => {
+
+    const filePath = path.join(
+      __dirname,
+      "datasets",
+      "Mental_Health_dataset",
+      "counselchat-data.csv"
+    );
+
+    fs.createReadStream(filePath)
+      .pipe(csv())
+      .on("data", (row) => {
+        if (row.questiontext && row.answertext) {
+          counselData.push({
+            q: row.questiontext.toLowerCase(),
+            a: row.answertext
+          });
+        }
+      })
+      .on("end", () => {
+        console.log(`✅ Loaded ${counselData.length} counsel entries`);
+        resolve();
+      })
+      .on("error", reject);
+  });
+}
+
+await loadData();
+
+// -------------------------
+// CHAT API
+// -------------------------
+app.post("/api/chat", (req, res) => {
+  const message = (req.body.message || "").toLowerCase();
+
+  if (!message) {
+    return res.json({ reply: "Please say something." });
+  }
+
+  const mood = detectMood(message);
+
+  let candidates = [];
+
+  // match dataset
+  for (const row of counselData) {
+    if (row.q.includes(message)) {
+      candidates.push(row.a);
+    }
+  }
+
+  let reply;
+
+  if (candidates.length > 0) {
+    reply = candidates[Math.floor(Math.random() * candidates.length)];
+  } else {
+    const responses = therapistResponses[mood] || therapistResponses.general;
+    reply = responses[Math.floor(Math.random() * responses.length)];
+  }
+
+  // 🔥 FINAL OUTPUT FIX
+  return res.json({
+    reply: formatReply(reply)
+  });
 });
 
-app.post("/chat", async (req, res) => {
-    res.json({ response: "Dataset service ready. 😊" });
+// -------------------------
+// STATIC FILES
+// -------------------------
+app.use(express.static(path.join(__dirname, "public")));
+
+// -------------------------
+// SERVER
+// -------------------------
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`✅ Server running on http://localhost:${PORT}`);
 });
-
-// Static AFTER routes
-app.use(express.static(path.join(__dirname, 'public'), { index: false })); // disable index.html auto
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`✅ Tranquoria on port ${PORT} - / forces login.html, no auto-index`));

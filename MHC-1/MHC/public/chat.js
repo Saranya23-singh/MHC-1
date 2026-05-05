@@ -1,7 +1,7 @@
 // AI Companion Chat JavaScript
 // Uses backend server which connects to Gemini API
 
-const API_URL = "http://localhost:5001/chat";
+const API_URL = "/api/chat";
 
 // Initialize chat when page loads
 document.addEventListener("DOMContentLoaded", () => {
@@ -52,6 +52,8 @@ async function sendMessage() {
             anxiety: assessment?.score || null
         };
 
+        console.log("🚀 sendMessage triggered");
+        console.log("📡 Sending request to /api/chat");
         const response = await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -61,6 +63,7 @@ async function sendMessage() {
             }),
         });
 
+        console.log("✅ Raw response:", response);
         console.log("Response status:", response.status);
 
         // Remove typing indicator
@@ -75,7 +78,8 @@ async function sendMessage() {
         console.log("Response data:", data);
 
         // Display bot response
-        const botReply = data.response || "I'm here to listen. Could you tell me a bit more about how you're feeling?";
+        console.log("✅ API RESPONSE:", data);
+        const botReply = data.reply || "I'm here to listen. Could you tell me a bit more about how you're feeling?";
         const formattedReply = formatResponse(botReply);
         addMessageBubble("bot", formattedReply);
 
