@@ -300,74 +300,7 @@
         </div>
     </div>
 
-    <script>
-        // Check if user is already logged in
-        if (localStorage.getItem('isLoggedIn')) {
-            window.location.href = 'companion.html';
-        }
-
-        document.getElementById('signupForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            const errorMsg = document.getElementById('errorMsg');
-            const successMsg = document.getElementById('successMsg');
-            
-            // Reset messages
-            errorMsg.classList.remove('show');
-            successMsg.classList.remove('show');
-            
-            // Validate passwords match
-            if (password !== confirmPassword) {
-                errorMsg.textContent = 'Passwords do not match. Please try again.';
-                errorMsg.classList.add('show');
-                return;
-            }
-            
-            // Get stored users
-            const users = JSON.parse(localStorage.getItem('tranquoria_users') || '[]');
-            
-            // Check if email already exists
-            if (users.find(u => u.email === email)) {
-                errorMsg.textContent = 'An account with this email already exists.';
-                errorMsg.classList.add('show');
-                return;
-            }
-            
-            // Create new user
-            const newUser = {
-                id: Date.now(),
-                name: name,
-                email: email,
-                password: password,
-                createdAt: new Date().toISOString(),
-                streak: 0,
-                lastActive: null,
-                moods: [],
-                wellnessScore: 0
-            };
-            
-            // Save user
-            users.push(newUser);
-            localStorage.setItem('tranquoria_users', JSON.stringify(users));
-            
-            // Auto login
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('tranquoria_user', JSON.stringify(newUser));
-            
-            // Show success and redirect
-            successMsg.textContent = 'Account created successfully! Redirecting...';
-            successMsg.classList.add('show');
-            
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 1500);
-        });
-    </script>
-</body>
+    <script src="signup.js"></script>
+    </body>
 </html>
 

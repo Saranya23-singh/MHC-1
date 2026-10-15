@@ -1,4 +1,5 @@
 // 5-4-3-2-1 Grounding Exercise Game
+console.log("🟢 grounding.js loaded");
 const groundingSteps = [
     { count: 5, category: 'see', text: 'Name 5 things you can see around you', verb: 'seen' },
     { count: 4, category: 'touch', text: 'Name 4 things you can touch', verb: 'felt' },

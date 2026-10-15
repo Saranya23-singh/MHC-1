@@ -1,3 +1,5 @@
+console.log("🟢 bubblewrap.js loaded");
+bubblewrap:
 // Bubble Wrap Game
 const bubbleColors = [
     '#E8F5E9', '#C8E6C9', '#A5D6A7', '#81C784',
@@ -60,4 +62,3 @@ function lightenColor(color, percent) {
 
 // Fixed: expose to window for games controller integration
 window.initBubbleWrap = initBubbleWrap;
-

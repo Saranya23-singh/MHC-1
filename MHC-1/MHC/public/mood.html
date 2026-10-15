@@ -4,90 +4,175 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mood Check - Tranquoria</title>
-    <link rel="stylesheet" href="dashboard.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- REMOVE dashboard.css (this was breaking layout) -->
+    <!-- <link rel="stylesheet" href="dashboard.css"> -->
+
+    <link rel="stylesheet" href="mstyle.css">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <!-- Sidebar (same as dashboard) -->
-    <nav class="sidebar">
-        <div class="logo">
-            <i class="fas fa-spa"></i>
-            <span>Tranquoria</span>
-        </div>
-        <ul class="nav-menu">
-            <li><a href="dashboard.html" onclick="goToDashboard()"><i class="fas fa-home"></i> Dashboard</a></li>
-            <!-- Minimal nav for mood page -->
-        </ul>
-        <div class="nav-footer">
-            <a href="login.html" class="logout-btn" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
-        </div>
-    </nav>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <header class="dashboard-header">
-            <div class="greeting">
-                <h1>Mood Check <span>🌿</span></h1>
-                <p>Let's see how you're feeling today</p>
-            </div>
-        </header>
-
-        <section id="mood-container" class="mood-section">
-            <!-- MoodScreen.js will render here -->
-        </section>
-
-        <section id="suggestion-container" class="mood-section" style="display:none;">
-            <!-- SuggestionCards.js will render here -->
-        </section>
-    </main>
-
-    <script src="navigation.js"></script>
-    <script type="module">
-        import { renderMoodScreen } from './MoodScreen.js';
-        import { renderSuggestionCards, attachSuggestionEvents } from './SuggestionCards.js';
-
-        const moodContainer = document.getElementById('mood-container');
-        const suggestionContainer = document.getElementById('suggestion-container');
-
-        // Render mood screen
-        renderMoodScreen(moodContainer, {
-            onContinue: (moodData) => {
-                // Save mood
-                localStorage.setItem('currentMood', JSON.stringify(moodData));
-                // Show suggestions
-                showSuggestions(moodData.mood);
-            },
-            onSkip: () => {
-                window.location.href = 'dashboard.html';
-            }
-        });
-
-        function showSuggestions(mood) {
-            moodContainer.style.display = 'none';
-            suggestionContainer.style.display = 'block';
-            suggestionContainer.innerHTML = renderSuggestionCards(mood, {
-                handleBreathing: () => window.location.href = 'BE.html',
-                handleJournal: () => window.location.href = 'journal.html',
-                handlePeerMatch: () => window.location.href = 'peer-support.html',
-                handleDashboard: () => window.location.href = 'dashboard.html'
-            });
-            attachSuggestionEvents(suggestionContainer, {
-                handleBreathing: () => window.location.href = 'BE.html',
-                handleJournal: () => window.location.href = 'journal.html',
-                handlePeerMatch: () => window.location.href = 'peer-support.html',
-                handleDashboard: () => window.location.href = 'dashboard.html'
-            });
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #eaf4ec, #dcefe3);
+            margin: 0;
         }
 
-        // Global logout
-        window.logout = () => {
-            localStorage.clear();
-            window.location.href = 'login.html';
-        };
-    </script>
+        .main-content {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        /* FIX HEADER */
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 36px;
+            color: #2e5d3f;
+            margin: 0;
+        }
+
+        .dashboard-header p {
+            color: #6b7c6f;
+            margin-top: 8px;
+        }
+
+        /* MAIN WRAPPER */
+        .mood-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            background: #f9fbf9;
+            border-radius: 20px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.12);
+        }
+
+        .mood-wrapper h2 {
+            margin-bottom: 10px;
+            color: #2e5d3f;
+        }
+
+        .mood-wrapper p {
+            color: #6b7c6f;
+        }
+
+        /* CENTER MOOD CONTENT */
+        #mood-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mood-screen {
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .mood-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            font-family: Nunito;
+        }
+
+        .action-row {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-primary {
+            background: #ff7a2f;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background: #eee;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="main-content">
+
+    <!-- CENTERED HEADER -->
+    <header class="dashboard-header">
+        <h1>Mood Check 🌿</h1>
+        <p>Let's see how you're feeling today</p>
+    </header>
+
+    <div class="mood-wrapper">
+
+        <h2>Let’s begin with a gentle check-in</h2>
+        <p>Tell me how you’re feeling, and I’ll guide you.</p>
+
+        <!-- Mood Content -->
+        <section id="mood-container"></section>
+
+        <!-- Suggestions -->
+        <section id="suggestion-container" style="display:none;"></section>
+
+    </div>
+
+</main>
+
+<script type="module">
+    import { renderMoodScreen } from './MoodScreen.js';
+    import { renderSuggestionCards, attachSuggestionEvents } from './SuggestionCards.js';
+
+    const moodContainer = document.getElementById('mood-container');
+    const suggestionContainer = document.getElementById('suggestion-container');
+
+    renderMoodScreen(moodContainer, {
+        onContinue: (moodData) => {
+            localStorage.setItem('currentMood', JSON.stringify(moodData));
+            showSuggestions(moodData.mood);
+        },
+        onSkip: () => {
+            window.location.href = 'dashboard.html';
+        }
+    });
+
+    function showSuggestions(mood) {
+        moodContainer.style.display = 'none';
+        suggestionContainer.style.display = 'block';
+
+        suggestionContainer.innerHTML = renderSuggestionCards(mood, {
+            handleBreathing: () => window.location.href = 'BE.html',
+            handleJournal: () => window.location.href = 'journal.html',
+            handlePeerMatch: () => window.location.href = 'peer-support.html',
+            handleDashboard: () => window.location.href = 'dashboard.html'
+        });
+
+        attachSuggestionEvents(suggestionContainer, {
+            handleBreathing: () => window.location.href = 'BE.html',
+            handleJournal: () => window.location.href = 'journal.html',
+            handlePeerMatch: () => window.location.href = 'peer-support.html',
+            handleDashboard: () => window.location.href = 'dashboard.html'
+        });
+    }
+</script>
+
 </body>
 </html>
-

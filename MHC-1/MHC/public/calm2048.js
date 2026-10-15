@@ -1,4 +1,5 @@
 // ===== 2048 CALM MODE (FIXED VERSION) =====
+console.log("🟢 calm2048.js loaded");
 
 let board = [];
 let score = 0;
