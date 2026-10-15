@@ -6,83 +6,73 @@ const moods = [
 ];
 
 export function renderMoodScreen(container, { onContinue, onSkip }) {
-  let selectedMood = moods[1];
+  console.log("MoodScreen loaded ✅");
+
+  let selectedMood = "neutral";
+  let selectedLabel = "Neutral";
   let feelingText = "";
 
   container.innerHTML = `
-    <div class="companion-shell">
-      <div class="ambient ambient-one"></div>
-      <div class="ambient ambient-two"></div>
-      <section class="mood-screen fade-up">
-        <div class="mood-screen__badge">Your daily companion</div>
-        <h1>Let’s begin with a gentle check-in</h1>
-        <p class="mood-screen__intro">
-          Tell me how you’re feeling right now, and I’ll guide you toward the support that fits best.
-        </p>
+    <div class="mood-screen">
 
-        <div class="mood-grid" role="list" aria-label="Mood options">
-          ${moods
-            .map(
-              (mood, index) => `
-                <button
-                  type="button"
-                  class="mood-card ${index === 1 ? "is-selected" : ""}"
-                  data-mood="${mood.value}"
-                  data-label="${mood.label}"
-                >
-                  <span class="mood-card__emoji">${mood.emoji}</span>
-                  <span class="mood-card__title">${mood.label}</span>
-                  <span class="mood-card__note">${mood.note}</span>
-                </button>
-              `
-            )
-            .join("")}
-        </div>
+      <h2>Let’s begin with a gentle check-in</h2>
+      <p>Tell me how you're feeling right now</p>
 
-        <label class="mood-screen__label" for="feeling-text">How are you feeling?</label>
-        <textarea
-          id="feeling-text"
-          class="mood-screen__textarea"
-          rows="4"
-          placeholder="You can share a little more if you’d like..."
-        ></textarea>
+      <div class="mood-grid">
+        ${moods.map(m => `
+          <div class="mood-card" data-mood="${m.value}" data-label="${m.label}">
+            <div class="emoji">${m.emoji}</div>
+            <div class="title">${m.label}</div>
+            <div class="note">${m.note}</div>
+          </div>
+        `).join("")}
+      </div>
 
-        <div class="mood-screen__actions">
-          <button type="button" class="secondary-btn" data-action="skip">Go straight to dashboard</button>
-          <button type="button" class="primary-btn" data-action="continue">Continue</button>
-        </div>
-      </section>
+      <textarea id="feeling-text" placeholder="Share more (optional)..."></textarea>
+
+      <div class="actions">
+        <button id="skip-btn">Skip</button>
+        <button id="continue-btn">Continue</button>
+      </div>
+
     </div>
   `;
 
-  const moodCards = Array.from(container.querySelectorAll(".mood-card"));
-  const textArea = container.querySelector("#feeling-text");
-  const continueButton = container.querySelector('[data-action="continue"]');
-  const skipButton = container.querySelector('[data-action="skip"]');
+  // ===== CLICK HANDLER (BULLETPROOF) =====
+  container.addEventListener("click", (e) => {
+    const card = e.target.closest(".mood-card");
 
-  moodCards.forEach((card) => {
-    card.addEventListener("click", () => {
-      moodCards.forEach((item) => item.classList.remove("is-selected"));
-      card.classList.add("is-selected");
+    if (card) {
+      console.log("Mood selected:", card.dataset.mood);
 
-      selectedMood = {
-        value: card.dataset.mood,
-        label: card.dataset.label,
-      };
-    });
+      container.querySelectorAll(".mood-card")
+        .forEach(c => c.classList.remove("active"));
+
+      card.classList.add("active");
+
+      selectedMood = card.dataset.mood;
+      selectedLabel = card.dataset.label;
+    }
+
+    if (e.target.id === "continue-btn") {
+      console.log("Continue clicked");
+
+      onContinue({
+        mood: selectedMood,
+        label: selectedLabel,
+        text: feelingText
+      });
+    }
+
+    if (e.target.id === "skip-btn") {
+      console.log("Skip clicked");
+      onSkip();
+    }
   });
 
-  textArea.addEventListener("input", (event) => {
-    feelingText = event.target.value.trim();
+  // ===== TEXT INPUT =====
+  const textarea = container.querySelector("#feeling-text");
+  textarea.addEventListener("input", (e) => {
+    feelingText = e.target.value;
   });
-
-  continueButton.addEventListener("click", () => {
-    onContinue({
-      mood: selectedMood.value,
-      label: selectedMood.label,
-      text: feelingText,
-    });
-  });
-
-  skipButton.addEventListener("click", onSkip);
 }

@@ -3,132 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tranquoria - Landing</title>
-    <link rel="stylesheet" href="Landingpage.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Login - Tranquoria</title>
+
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2e8b57, #4cd964);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 40px;
+            color: white;
+        }
+
+        .nav-right a {
+            margin-left: 15px;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .login-btn {
+            border: 1px solid white;
+            color: white;
+        }
+
+        .signup-btn {
+            background: #ff7a18;
+            color: white;
+        }
+
+        /* MAIN */
+        .container {
+            display: flex;
+            flex: 1;
+            align-items: center;
+            justify-content: space-around;
+            padding: 40px;
+        }
+
+        .left {
+            color: white;
+            max-width: 500px;
+        }
+
+        .left h1 {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        .left p {
+            margin-bottom: 20px;
+        }
+
+        .left img {
+            width: 100%;
+            border-radius: 20px;
+        }
+
+        /* LOGIN CARD */
+        .login-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 350px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .login-card h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .login-btn-main {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 20px;
+            background: linear-gradient(to right, #2e8b57, #4cd964);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .reset-btn {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            background: #ff5e5e;
+            color: white;
+            cursor: pointer;
+        }
+
+        .error-msg {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .signup-link {
+            margin-top: 15px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .signup-link a {
+            color: #2e8b57;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
 </head>
+
 <body>
-    <!-- Floating gradient orbs -->
-    <div class="floating-orb orb-1"></div>
-    <div class="floating-orb orb-2"></div>
-    <div class="floating-orb orb-3"></div>
 
-    <nav class="navbar">
-        <div class="logo"><i class="fas fa-spa"></i> Tranquoria</div>
-        <div class="nav-links">
-            <div class="auth-buttons">
-                <a href="#login-section" class="btn btn-login">Log In</a>
-                <a href="signup.html" class="btn btn-signup">Sign Up</a>
-            </div>
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <h2>🌿 Tranquoria</h2>
+        <div class="nav-right">
+            <a href="login.html" class="login-btn">Log In</a>
+            <a href="signup.html" class="signup-btn">Sign Up</a>
         </div>
-    </nav>
+    </div>
 
-    <!-- Hero Section - 2 column layout -->
-    <main class="hero">
-        <!-- Left Side: Text + Image -->
-        <div class="hero-left">
-            <div class="hero-content">
-                <h1 class="hero-title">Tranquoria</h1>
-                <p class="hero-subtitle">Start Your Calm Journey Today</p>
-                <p class="hero-description">Your mind deserves a peaceful space to breathe and reflect.</p>
-            </div>
-            <div class="hero-image">
-                <img src="silhouette-yoga-boy-rooftop-while-sunset-he-is-practicing-yoga.jpg" alt="Yoga meditation">
-            </div>
+    <!-- MAIN -->
+    <div class="container">
+
+        <!-- LEFT SIDE -->
+        <div class="left">
+            <h1>Tranquoria</h1>
+            <h3>Start Your Calm Journey Today</h3>
+            <p>Your mind deserves a peaceful space to breathe and reflect.</p>
+            <img src="LandingPagebg.jpg" alt="Meditation">
         </div>
 
-        <!-- Right Side: Login Form -->
-        <div class="hero-right">
-            <div class="auth-container" id="login-section">
-                <div class="logo">
-                    <h2><i class="fas fa-spa"></i> Welcome Back</h2>
-                    <p>Continue your wellness journey</p>
+        <!-- LOGIN CARD -->
+        <div class="login-card">
+            <h2>Welcome Back</h2>
+
+            <div id="errorMsg" class="error-msg"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" required>
                 </div>
 
-                <div class="error-msg" id="errorMsg"></div>
-
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" id="email" placeholder="your@email.com" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label><i class="fas fa-lock"></i> Password</label>
-                        <input type="password" id="password" placeholder="Enter your password" required>
-                    </div>
-
-                    <button type="submit" class="submit-btn">
-                        <i class="fas fa-sign-in-alt"></i> Login
-                    </button>
-                </form>
-
-                <div class="reset-section">
-                    <button type="button" onclick="resetSession()" class="reset-btn" style="background: #ff6b6b; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; width: 100%; margin-top: 10px;">
-                        Reset Session
-                    </button>
-                    <p style="font-size: 0.8em; color: #666; text-align: center; margin-top: 5px;">Demo: demo@tranquoria.com / demo123</p>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" required>
                 </div>
 
-                <div class="auth-footer">
+                <button type="submit" class="login-btn-main">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+
+                <button type="button" class="reset-btn" onclick="localStorage.clear(); alert('Session reset');">
+                    Reset Session
+                </button>
+
+                <p style="font-size:12px; margin-top:10px;">
+                    Demo: demo@tranquoria.com / demo123
+                </p>
+
+                <div class="signup-link">
                     Don't have an account? <a href="signup.html">Sign up</a>
                 </div>
-            </div>
+            </form>
         </div>
-    </main>
 
-    <!-- Features Section -->
-    <section class="features-section">
-        <div class="container">
-            <h2 class="features-title">Our Features</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <h3>AI Companion</h3>
-                    <p>Chat for emotional support</p>
-                </div>
-                <!-- other features as before -->
-            </div>
-        </div>
-    </section>
+    </div>
 
-    <script src="navigation.js"></script>
-    <script>
-        // Reset function
-        function resetSession() {
-            localStorage.clear();
-            location.reload();
-        }
+    <!-- LOGIN SCRIPT -->
+    <script src="login.js"></script>
 
-        // Login logic - redirect to companion.html
-        let users = JSON.parse(localStorage.getItem('tranquoria_users') || '[]');
-        if (users.length === 0) {
-            users = [{
-                email: 'demo@tranquoria.com',
-                password: 'demo123',
-                name: 'Demo User'
-            }];
-            localStorage.setItem('tranquoria_users', JSON.stringify(users));
-        }
-
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const user = users.find(u => u.email === email && u.password === password);
-            if (user) {
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('tranquoria_user', JSON.stringify(user));
-                console.log('Login success - going to mood.html');
-                window.location.href = 'mood.html';
-            } else {
-                document.getElementById('errorMsg').textContent = 'Invalid credentials. Try demo@tranquoria.com / demo123';
-                document.getElementById('errorMsg').classList.add('show');
-            }
-        });
-    </script>
 </body>
 </html>

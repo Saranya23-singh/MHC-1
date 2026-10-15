@@ -1,110 +1,127 @@
-/** Games Controller - Fixed for Tranquoria Games Feature
- * Handles game selection, muting, sounds, and navigation
- * Debug logs added for troubleshooting
- */
+/** Games Controller - FINAL FIXED VERSION */
+console.log("🔥 games.js LOADED");
 
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('✅ Games controller loaded - DOM ready');
-    console.log('🎮 Available games: bubblewrap, infinityloop, calm2048, grounding, puzzlebuilder');
+    console.log('✅ Games controller loaded');
 });
 
 let isMuted = false;
 
+/* 🔊 SOUND CONTROL */
 function toggleMute() {
-    console.log('🔊 Toggle mute:', isMuted ? 'ON -> OFF' : 'OFF -> ON');
     isMuted = !isMuted;
     const btn = document.getElementById('muteBtn');
-    const text = document.getElementById('muteText');
-    if (isMuted) {
-        btn.classList.add('muted');
-        btn.innerHTML = '<i class="fas fa-volume-mute"></i> <span>Sound Off</span>';
-    } else {
-        btn.classList.remove('muted');
-        btn.innerHTML = '<i class="fas fa-volume-up"></i> <span>Sound On</span>';
+
+    if (btn) {
+        if (isMuted) {
+            btn.classList.add('muted');
+            btn.innerHTML = '<i class="fas fa-volume-mute"></i> Sound Off';
+        } else {
+            btn.classList.remove('muted');
+            btn.innerHTML = '<i class="fas fa-volume-up"></i> Sound On';
+        }
     }
-    console.log('🔊 Mute status:', isMuted);
 }
 
+/* 🔊 POP SOUND */
 function playPopSound() {
-    if (isMuted) {
-        console.log('🔇 Sound muted - pop skipped');
-        return;
-    }
+    if (isMuted) return;
+
     const audio = document.getElementById('popSound');
     if (audio) {
         audio.volume = 0.3;
         audio.currentTime = 0;
-        audio.play().catch(e => console.warn('🔊 Audio play failed:', e));
-        console.log('🔊 Pop sound played');
-    } else {
-        console.warn('🔊 popSound audio element not found');
+        audio.play().catch(() => { });
     }
 }
+window.playPopSound = playPopSound;
 
+/* 🎮 INTERNAL GAME HANDLER */
 function startGame(game) {
     console.log(`🎮 Starting game: ${game}`);
 
-    // Hide main UI
     const gamesGrid = document.getElementById('gamesGrid');
     const mainHeader = document.getElementById('mainHeader');
+
     if (gamesGrid) gamesGrid.style.display = 'none';
     if (mainHeader) mainHeader.style.display = 'none';
 
     // Hide all game areas
-    document.querySelectorAll('.game-area').forEach(area => area.classList.remove('active'));
+    document.querySelectorAll('.game-area').forEach(area => {
+        area.classList.remove('active');
+    });
 
-    // Show and init specific game
+    // Show selected game
     const gameArea = document.getElementById(game + 'Game');
-    if (gameArea) {
-        gameArea.classList.add('active');
-        console.log(`✅ ${game.charAt(0).toUpperCase() + game.slice(1)} game area activated`);
-    } else {
-        console.error(`❌ Game area not found: ${game}Game`);
+
+    if (!gameArea) {
+        console.error(`❌ Game area not found: ${game}`);
         backToGames();
         return;
     }
 
-    // Call init function if exists
-    const initFunc = window['init' + game.charAt(0).toUpperCase() + game.slice(1)];
+    gameArea.classList.add('active');
+
+    /* 🎯 INIT FUNCTION MAP */
+    const gameInitMap = {
+        bubblewrap: window.initBubbleWrap,
+        infinityloop: window.initInfinityLoop,
+        calm2048: window.initCalm2048,
+        grounding: window.initGrounding,
+        puzzlebuilder: window.initPuzzleBuilder
+    };
+
+    const initFunc = gameInitMap[game];
+
     if (typeof initFunc === 'function') {
-        console.log(`🔧 Calling init${game.charAt(0).toUpperCase() + game.slice(1)}()`);
+        console.log(`✅ Initializing ${game}`);
         try {
             initFunc();
-            console.log(`✅ ${game} initialized successfully`);
-        } catch (e) {
-            console.error(`❌ Init failed for ${game}:`, e);
+        } catch (err) {
+            console.error(`❌ Error running ${game}:`, err);
         }
     } else {
-        console.warn(`⚠️ init${game.charAt(0).toUpperCase() + game.slice(1)}() not found - game may auto-init`);
+        console.warn(`⚠️ No init function found for ${game}`);
     }
-
-    console.log(`🎮 ${game} game started successfully`);
 }
 
+/* 🌐 EXTERNAL GAME HANDLER */
+function openExternalGame(url) {
+    console.log(`🌐 Opening external game: ${url}`);
+    window.open(url, '_blank');
+}
+
+/* 🔙 BACK BUTTON */
 function backToGames() {
-    console.log('🏠 Back to games grid');
+    console.log("🏠 Returning to games");
 
-    // Hide all game areas
-    document.querySelectorAll('.game-area').forEach(area => area.classList.remove('active'));
+    document.querySelectorAll('.game-area').forEach(area => {
+        area.classList.remove('active');
+    });
 
-    // Show main UI
     const gamesGrid = document.getElementById('gamesGrid');
     const mainHeader = document.getElementById('mainHeader');
+
     if (gamesGrid) gamesGrid.style.display = 'grid';
     if (mainHeader) mainHeader.style.display = 'block';
-
-    console.log('✅ Returned to games selection');
 }
 
-// Make generateNewLoop globally accessible for infinityloop.html
-window.generateNewLoop = function () {
-    console.log('🔄 Generating new infinity loop pattern');
-    if (typeof initInfinityLoop === 'function') {
-        initInfinityLoop();
+/* 🔁 INFINITY LOOP */
+function generateNewLoop() {
+    console.log("🔄 Generating new loop");
+
+    if (typeof window.initInfinityLoop === 'function') {
+        window.initInfinityLoop();
     } else {
-        console.warn('⚠️ initInfinityLoop not available');
+        console.warn("⚠️ initInfinityLoop not found");
     }
-};
+}
+window.generateNewLoop = generateNewLoop;
 
-console.log('🎮 Games controller script loaded');
+/* 🌍 GLOBAL EXPORTS (IMPORTANT) */
+window.startGame = startGame;
+window.backToGames = backToGames;
+window.openExternalGame = openExternalGame;
+window.toggleMute = toggleMute;
 
+console.log('🎮 Games controller ready');
